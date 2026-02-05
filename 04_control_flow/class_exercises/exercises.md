@@ -99,7 +99,7 @@ For `height = 3`, the function should return:
 Write at least 3 unit tests covering different heights and validation cases.
 
 ---
-
+<!-- 
 ## Running Your Tests
 
 To run the tests:
@@ -113,4 +113,4 @@ To run a specific test file:
 
 ```bash
 source ../../../../venv/bin/activate && pytest tests/test_exercise1.py -v
-```
+``` -->
