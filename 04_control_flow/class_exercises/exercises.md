@@ -4,16 +4,11 @@
 
 - Do not use any Generative-AI (like ChatGPT) tools to solve these exercises. The purpose is to practice your own skills. You can use Generative-AI tools to help you understand concepts, but not to generate the solution code.
 - Provide unit tests where asked using the `pytest` framework.
-- Advice: Write parameterized tests using the `@pytest.mark.parametrize` decorator.
 - All the unit tests should be in a Python package called `tests`. Use a separate Python module for each exercise test suite.
 - The unit test module should be called by convention `test_<subject>.py`
-- Adhere to Python coding standards PEP-8
 - Use Type Hints for function arguments and return values
 - If the functions is long (beyond 15 lines of code), divide into more functions.
-- Linting and Formatting Requirements - The Solution and the test code must be:
-  - Formatted with `black` formatter before submission.
-  - Pass `flake8` checks before submission.
-  - Pass `mypy` type checks before submission.
+
 
 ---
 
