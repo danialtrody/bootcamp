@@ -1,5 +1,5 @@
 import pytest
-from solution.convert_temperature import convert_temperature
+from solutions.convert_temperature import convert_temperature
 
 def test_convert_temperature():
     assert convert_temperature(0, "C", "F") == 32.0

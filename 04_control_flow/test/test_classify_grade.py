@@ -1,5 +1,5 @@
 import pytest
-from solution.classify_grade import classify_grade
+from solutions.classify_grade import classify_grade
 
 
 def test_classify_grade():
