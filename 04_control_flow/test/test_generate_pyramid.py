@@ -10,6 +10,7 @@ def test_generate_pyramid():
                                     )
 
 
+
 def test_generate_pyramid_invalid_low():
     with pytest.raises(ValueError, match="Height must be at least 1."):
         generate_pyramid(0)
