@@ -10,6 +10,33 @@
 - If the functions is long (beyond 15 lines of code), divide into more functions.
 
 
+
+## Exercise 1: Count Calls Decorator
+
+**Description:**
+Create a decorator called `count_calls` that tracks how many times a decorated function has been called. The decorator should add a `call_count` attribute to the function that can be accessed to get the current count.
+
+**Requirements:**
+- Implement a `count_calls` decorator that increments a counter each time the decorated function is called
+- The decorator should work with functions that have any number of arguments
+- The decorator should preserve the original function's return value
+- The counter should be accessible via the `call_count` attribute on the function
+- Include type hints for the decorator
+- Write at least 3 unit tests covering different scenarios
+
+**Example:**
+
+```python
+@count_calls
+def greet(name: str) -> str:
+    return f"Hello, {name}!"
+
+print(greet("Alice"))  # Output: "Hello, Alice!"
+print(greet("Bob"))    # Output: "Hello, Bob!"
+print(greet.call_count)  # Output: 2
+```
+
+
 ## Exercise 2: Flexible Statistics Calculator
 
 **Description:**
@@ -38,4 +65,39 @@ print(result)
 #     'temperatures': {'sum': 95.0, 'average': 23.75, 'min': 22.5, 'max': 25.0},
 #     'humidity': {'sum': 255, 'average': 63.75, 'min': 60, 'max': 68}
 # }
+```
+
+
+## Exercise 3: List Operations with Lambda
+
+**Description:**
+Create three functions that use lambda expressions to perform operations on lists of dictionaries. Each function should transform or filter data representing people with their names and ages.
+
+**Requirements:**
+- Implement `filter_adults(people: list[dict]) -> list[dict]` - returns only people who are 18 or older
+- Implement `get_names(people: list[dict]) -> list[str]` - returns a list of names only
+- Implement `sort_by_age(people: list[dict]) -> list[dict]` - returns people sorted by age in ascending order
+- All three functions must use lambda expressions in their implementation
+- Include type hints for function arguments and return values
+- Write at least 3 unit tests for each function
+
+**Example:**
+
+```python
+people = [
+    {"name": "Alice", "age": 25},
+    {"name": "Bob", "age": 17},
+    {"name": "Charlie", "age": 30},
+    {"name": "Diana", "age": 16}
+]
+
+adults = filter_adults(people)
+# Output: [{"name": "Alice", "age": 25}, {"name": "Charlie", "age": 30}]
+
+names = get_names(people)
+# Output: ["Alice", "Bob", "Charlie", "Diana"]
+
+sorted_people = sort_by_age(people)
+# Output: [{"name": "Diana", "age": 16}, {"name": "Bob", "age": 17},
+#          {"name": "Alice", "age": 25}, {"name": "Charlie", "age": 30}]
 ```
