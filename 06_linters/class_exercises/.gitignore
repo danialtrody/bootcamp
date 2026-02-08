@@ -1,0 +1,11 @@
+# Mypy cache
+.mypy_cache/
+
+# Pytest cache
+.pytest_cache/
+__pycache__/
+
+# Black cache
+.black/
+
+venv/
