@@ -57,3 +57,64 @@ print(abs(v1))  # Output: 5.0
 print(v1.dot(v2))  # Output: 11.0
 print(v1 == Vector2D(3.0, 4.0))  # Output: True
 ```
+
+---
+
+## Exercise 3: BankAccount with Properties and Encapsulation
+
+**Description:**
+Design and implement a `BankAccount` class that demonstrates proper use of properties, encapsulation, and validation. Your class should protect account data from invalid modifications while providing a clean interface for banking operations.
+
+**Learning Objectives:**
+- Use properties to control access to class attributes
+- Implement encapsulation with private attributes
+- Add validation logic to enforce business rules
+- Raise appropriate exceptions for invalid operations
+
+**Requirements:**
+- Design a `BankAccount` class that supports basic banking operations (deposits, withdrawals, balance inquiries)
+- Protect sensitive account data from direct modification outside the class
+- Prevent invalid operations such as:
+  - Depositing or withdrawing negative or zero amounts
+  - Withdrawing more money than available in the account
+- Track useful information about the account's activity
+- Provide a way to view account information in a user-friendly format
+
+**Design Considerations:**
+- What attributes should be private vs. public?
+- Which attributes should be read-only, and which should be modifiable?
+- What methods are needed for safe account operations?
+- How should invalid operations be handled (exceptions, return values)?
+- What validation rules make sense for a bank account?
+
+**Testing Requirements:**
+- Write at least 3 comprehensive unit tests that verify:
+  - Encapsulation: Protected data cannot be modified directly
+  - Validation: Invalid operations are properly rejected
+  - Business logic: Account operations work correctly under various scenarios
+
+**Example Usage:**
+Your implementation should support usage similar to this (exact method names and behavior are up to you):
+
+```python
+account = BankAccount("ACC123456")  # Create account with initial balance of 0
+
+# Deposit money
+account.deposit(1000.0)
+print(account.balance)  # Should show 1000.0
+
+# Withdraw money
+account.withdraw(300.0)
+print(account.balance)  # Should show 700.0
+
+# Attempt invalid withdrawal (should raise an exception)
+account.withdraw(800.0)  # Should fail - insufficient funds
+
+# Attempt to modify balance directly (should fail)
+account.balance = 5000.0  # Should raise an error - balance is protected
+
+# View account information
+print(account.get_statement())  # Display account details
+```
+
+**Note:** The exact implementation is up to you. Focus on proper encapsulation, validation, and creating a clean, intuitive interface.
