@@ -1,5 +1,5 @@
 import pytest
-from solution.bank_account import BankAccount
+from solutions.bank_account import BankAccount
 
 
 def test_balance_protected():
