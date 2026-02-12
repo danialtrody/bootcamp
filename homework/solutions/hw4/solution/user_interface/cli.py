@@ -16,7 +16,7 @@ def run_cli() -> None:
 
 def main_menu() -> str:
     menu_lines = [
-        "|==================|",
+        "\n|==================|",
         "|  Budget Planner  |",
         "|==================|",
         "|1. Add Income     |",
