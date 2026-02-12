@@ -85,8 +85,9 @@ def test_summary_basic() -> None:
     budget.add_expense(expense)
     remaining_budget = AMOUNT_TWO_HUNDRED - AMOUNT_HUNDRED
     summary = budget.summary()
-    assert f"{DESCRIPTION}: {AMOUNT_TWO_HUNDRED}" in summary
-    assert f"{DESCRIPTION}: {AMOUNT_HUNDRED}" in summary
-    assert f"Total Income: {AMOUNT_TWO_HUNDRED}" in summary
-    assert f"Total Expenses: {AMOUNT_HUNDRED}" in summary
-    assert f"Remaining Budget: {remaining_budget}" in summary
+
+    assert f"  1. {DESCRIPTION}  ${AMOUNT_TWO_HUNDRED:,.2f}" in summary
+    assert f"  1. {DESCRIPTION}  ${AMOUNT_HUNDRED:,.2f}" in summary
+    assert f"| TOTAL INCOME: ${AMOUNT_TWO_HUNDRED:,.2f}" in summary
+    assert f"| TOTAL EXPENSES: ${AMOUNT_HUNDRED:,.2f}" in summary
+    assert f"| REMAINING BUDGET: ${remaining_budget:,.2f}" in summary

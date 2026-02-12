@@ -34,25 +34,40 @@ class _BudgetHelper:
         return self.total_income() - self.total_expense()
 
     def summary(self: _BudgetProtocol) -> str:
-        """Return a summary of incomes, expenses, and remaining budget."""
+        """Return a nicely formatted summary of incomes, expenses, and remaining budget."""
+
         income_lines = "\n".join(
-            f"{income.description}: {income.amount}" for income in self.income
-        )
+            f"  {index}. {income.description}  ${income.amount:,.2f}"
+            for index, income in enumerate(self.income, start=1)
+        ) + "\n"
 
         expense_lines = "\n".join(
-            f"{expense.description}: {expense.amount}" for expense in self.expense
-        )
+            f"  {index}. {expense.description:}  ${expense.amount:,.2f}"
+            for index, expense in enumerate(self.expense, start=1)
+        ) + "\n"
 
         total_income = self.total_income()
         total_expense = self.total_expense()
         remaining_budget = self.remaining_budget()
 
         return (
-            f"Income:\n{income_lines}\n"
-            f"Total Income: {total_income}\n\n"
-            f"Expenses:\n{expense_lines}\n"
-            f"Total Expenses: {total_expense}\n\n"
-            f"Remaining Budget: {remaining_budget}"
+            "\n|====================================|\n"
+            "|           BUDGET SUMMARY           |\n"
+            "|====================================|\n"
+            "|                                    |\n"
+            "| INCOME SOURCES:                    |\n"
+            f"{income_lines}"
+            "|------------------------------------|\n"
+            f"| TOTAL INCOME: ${total_income:,.2f}\n"
+            "|                                    |\n"
+            "| EXPENSES:                          |\n"
+            f"{expense_lines}"
+            "|------------------------------------|\n"
+            f"| TOTAL EXPENSES: ${total_expense:,.2f}\n"
+            "|                                    |\n"
+            "|====================================|\n"
+            f"| REMAINING BUDGET: ${remaining_budget:,.2f}\n"
+            "|====================================|\n"
         )
 
     def remove_item(

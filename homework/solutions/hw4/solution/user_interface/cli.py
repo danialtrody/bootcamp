@@ -15,14 +15,21 @@ def run_cli() -> None:
 
 
 def main_menu() -> str:
-    print("\n===== Budget Planner =====")
-    print("1. Add Income")
-    print("2. Add Expense")
-    print("3. View Summary")
-    print("4. Remove Income")
-    print("5. Remove Expense")
-    print("6. Clear All Data")
-    print("7. Exit")
+    menu_lines = [
+        "|==================|",
+        "|  Budget Planner  |",
+        "|==================|",
+        "|1. Add Income     |",
+        "|2. Add Expense    |",
+        "|3. View Summary   |",
+        "|4. Remove Income  |",
+        "|5. Remove Expense |",
+        "|6. Clear All Data |",
+        "|7. Exit           |",
+        "|==================|"
+    ]
+    for line in menu_lines:
+        print(line)
     return input("\nChoose an option (1-7): ").strip()
 
 
