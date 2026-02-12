@@ -94,9 +94,7 @@ def _handle_stash_command(parts: List[str]) -> str:
             GitToken.APPLY.value,
             stash_name,
         ]:
-            result = (
-                f"Applies the most recently stashed changes {stash_name}."
-            )
+            result = f"Applies the most recently stashed changes {stash_name}."
 
         case _:
             result = INVALID_COMMAND

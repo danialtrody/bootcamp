@@ -26,14 +26,14 @@ def print_help() -> None:
     )
 
 
-def parse_float(number: str) -> float | None:
+def parse_float(number: str) -> float:
     try:
         return float(number)
     except (ValueError, IndexError):
         print(
             "Invalid input. Please enter numbers correctly. Type 'help' for instructions."
         )
-        return None
+    return 0.1
 
 
 def execute_operation(
