@@ -1,6 +1,17 @@
 from solution.business_logic.budget import Budget
 from solution.business_logic.income import Income
 from solution.business_logic.expense import Expense
+from solution.user_interface.cli_helpers import print_error, handle_remove
+
+
+def run_cli() -> None:
+    """Start the CLI loop for the budget planner."""
+
+    budget = Budget()
+    while True:
+        user_choice = main_menu()
+        if handle_user_choice(budget, user_choice):
+            break
 
 
 def main_menu() -> str:
@@ -37,15 +48,9 @@ def handle_user_choice(budget: Budget, choice: str) -> bool:
     return choice == "7"
 
 
-def run_cli() -> None:
-    budget = Budget()
-    while True:
-        user_choice = main_menu()
-        if handle_user_choice(budget, user_choice):
-            break
-
-
 def add_income_ui(budget: Budget) -> None:
+    """Prompt the user to add a new income and update the budget."""
+
     description = input("Enter income description: ").strip()
 
     try:
@@ -70,6 +75,8 @@ def add_income_ui(budget: Budget) -> None:
 
 
 def add_expense_ui(budget: Budget) -> None:
+    """Prompt the user to add a new expense and update the budget."""
+
     description = input("Enter expense description: ").strip()
 
     try:
@@ -89,14 +96,17 @@ def add_expense_ui(budget: Budget) -> None:
         print_error(error)
         return
 
-    print("Income added successfully!")
+    print("Expense added successfully!")
 
 
 def summary_ui(budget: Budget) -> None:
+    """Display the current budget summary including incomes and expenses."""
     print(budget.summary())
 
 
 def remove_income_ui(budget: Budget) -> None:
+    """Prompt the user to remove an income by description or index."""
+
     while True:
         print("1. remove income by description")
         print("2. remove income by index")
@@ -113,6 +123,7 @@ def remove_income_ui(budget: Budget) -> None:
 
 
 def remove_expense_ui(budget: Budget) -> None:
+    """Prompt the user to remove an expense by description or index."""
 
     while True:
         print("1. remove expense by description")
@@ -128,24 +139,8 @@ def remove_expense_ui(budget: Budget) -> None:
     print("Expense Removed successfully!")
 
 
-def handle_remove(remove_item_type: str, remove_method: str) -> int | str:
-    match remove_method:
-        case "1":
-            return input(f"Enter {remove_item_type} description: ").strip()
-        case "2":
-            try:
-                return int(input(f"Enter {remove_item_type} index: "))
-            except ValueError as error:
-                print(f"Error: {error}")
-        case _:
-            print("\nEnter a valid number 1 or 2")
-    return 0
-
-
 def clear_all_ui(budget: Budget) -> None:
+    """Clear all incomes and expenses from the budget."""
+
     budget.clear_all()
     print("Budget Cleared successfully!")
-
-
-def print_error(error: Exception) -> None:
-    print(f"Error: {error}")
