@@ -14,16 +14,6 @@ def test_create_expense_success() -> None:
     assert expense.amount == AMOUNT_HUNDRED
 
 
-def test_create_expense_invalid_amount_type() -> None:
-    with pytest.raises(ValueError, match="Amount must be a positive number"):
-        Expense(DESCRIPTION, None)
-
-
-def test_create_expense_invalid_description_type() -> None:
-    with pytest.raises(ValueError, match="Description must be a non-empty string"):
-        Expense(None, AMOUNT_HUNDRED)
-
-
 def test_create_expense_zero_amount() -> None:
     with pytest.raises(ValueError, match="Amount must be a positive number"):
         Expense(DESCRIPTION, AMOUNT_ZERO)

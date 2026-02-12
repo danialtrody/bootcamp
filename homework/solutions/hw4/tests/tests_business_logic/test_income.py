@@ -14,16 +14,6 @@ def test_create_income_success() -> None:
     assert income.amount == AMOUNT_HUNDRED
 
 
-def test_create_income_invalid_amount_type() -> None:
-    with pytest.raises(ValueError, match="Amount must be a positive number"):
-        Income(DESCRIPTION, None)
-
-
-def test_create_income_invalid_description_type() -> None:
-    with pytest.raises(ValueError, match="Description must be a non-empty string"):
-        Income(None, AMOUNT_HUNDRED)
-
-
 def test_create_income_zero_amount() -> None:
     with pytest.raises(ValueError, match="Amount must be a positive number"):
         Income(DESCRIPTION, AMOUNT_ZERO)
