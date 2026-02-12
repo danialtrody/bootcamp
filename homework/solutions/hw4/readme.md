@@ -18,3 +18,7 @@ python -m solution.main
 ```
 pytest .
 ```
+
+**Note: This is the initial version of the Budget Planner CLI.** 
+
+**Development is still in progress, and features may be incomplete or updated.**
