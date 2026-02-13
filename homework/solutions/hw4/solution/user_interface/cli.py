@@ -44,7 +44,7 @@ def handle_user_choice(budget: Budget, choice: str) -> bool:
         "4": remove_income_ui,
         "5": remove_expense_ui,
         "6": clear_all_ui,
-        "7": lambda bye: print("Good Bye :)"),
+        "7": lambda _: print("Good Bye :)"),
     }
 
     action = actions.get(choice)
