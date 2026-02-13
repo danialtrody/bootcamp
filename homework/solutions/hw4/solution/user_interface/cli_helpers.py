@@ -4,9 +4,8 @@ from solution.business_logic.expense import Expense
 
 
 def add_transaction_ui(budget: Budget, transaction_type: str) -> None:
-    """Prompt the user to add an income or expense to the budget."""  
+    """Prompt the user to add an income or expense to the budget."""
 
-    
     description = input(f"Enter {transaction_type} description: ").strip()
 
     try:
