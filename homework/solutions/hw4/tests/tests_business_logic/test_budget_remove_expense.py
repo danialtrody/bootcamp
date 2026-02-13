@@ -34,7 +34,7 @@ def test_remove_expense_by_index_success() -> None:
     expense = Expense(DESCRIPTION, AMOUNT_HUNDRED)
     budget = Budget()
     budget.add_expense(expense)
-    budget.remove_expense(INDEX_ZERO)
+    budget.remove_expense(INDEX_ONE)
     assert budget.expense == []
     assert len(budget.expense) == 0
 
@@ -43,12 +43,12 @@ def test_remove_expense_by_index_failed() -> None:
     expense = Expense(DESCRIPTION, AMOUNT_HUNDRED)
     budget = Budget()
     budget.add_expense(expense)
-    expense_length = len(budget.expense) - 1
+    expense_length = len(budget.expense)
     expected_output = (
-        f"Invalid index {INDEX_ONE}. Index must be between 0 and {expense_length}."
+        f"Invalid index {INDEX_ZERO}. Index must be between 1 and {expense_length}."
     )
     with pytest.raises(IndexError, match=expected_output):
-        budget.remove_expense(INDEX_ONE)
+        budget.remove_expense(INDEX_ZERO)
 
 
 def test_remove_expense_by_index_empty_list_fail() -> None:

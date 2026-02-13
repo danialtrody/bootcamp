@@ -34,7 +34,7 @@ def test_remove_income_by_index_success() -> None:
     income = Income(DESCRIPTION, AMOUNT_HUNDRED)
     budget = Budget()
     budget.add_income(income)
-    budget.remove_income(INDEX_ZERO)
+    budget.remove_income(INDEX_ONE)
     assert budget.income == []
     assert len(budget.income) == 0
 
@@ -43,12 +43,12 @@ def test_remove_income_by_index_failed() -> None:
     income = Income(DESCRIPTION, AMOUNT_HUNDRED)
     budget = Budget()
     budget.add_income(income)
-    income_length = len(budget.income) - 1
+    income_length = len(budget.income)
     expected_output = (
-        f"Invalid index {INDEX_ONE}. Index must be between 0 and {income_length}."
+        f"Invalid index {INDEX_ZERO}. Index must be between 1 and {income_length}."
     )
     with pytest.raises(IndexError, match=expected_output):
-        budget.remove_income(INDEX_ONE)
+        budget.remove_income(INDEX_ZERO)
 
 
 def test_remove_income_by_index_empty_list_failed() -> None:

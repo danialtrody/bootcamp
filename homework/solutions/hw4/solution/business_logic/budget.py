@@ -96,13 +96,13 @@ class _BudgetHelper:
 
     def _remove_item_by_index(self, lst: list, description_or_index: int) -> None:
         """Remove item in list by index."""
-        if not (0 <= description_or_index < len(lst)):
-            list_length = len(lst) - 1
+        if not (1 <= description_or_index <= len(lst)):
+            list_length = len(lst)
             raise IndexError(
                 f"Invalid index {description_or_index}. "
-                f"Index must be between 0 and {list_length}."
+                f"Index must be between 1 and {list_length}."
             )
-        lst.pop(description_or_index)
+        lst.pop(description_or_index - 1)
 
 
 class Budget(_BudgetHelper):

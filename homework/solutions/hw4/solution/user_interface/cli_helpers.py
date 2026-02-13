@@ -52,7 +52,7 @@ def remove_transaction_ui(budget: Budget, transaction_type: str) -> None:
         else:
             budget.remove_expense(description_or_index)
 
-    except ValueError as error:
+    except (ValueError, IndexError) as error:
         print(f"Error: {error}")
         return
     print(f"{transaction_type.capitalize()} Removed successfully!")
