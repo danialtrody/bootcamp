@@ -62,8 +62,8 @@ def add_income_ui(budget: Budget) -> None:
 
     try:
         amount = float(input("Enter income amount: "))
-    except ValueError as error:
-        print_error(error)
+    except ValueError:
+        print_error("Invalid input. Please enter a valid amount.")
         return
 
     try:
@@ -88,8 +88,8 @@ def add_expense_ui(budget: Budget) -> None:
 
     try:
         amount = float(input("Enter expense amount: "))
-    except ValueError as error:
-        print_error(error)
+    except ValueError:
+        print_error("Invalid input. Please enter a valid amount.")
         return
 
     try:
