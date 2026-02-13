@@ -3,7 +3,7 @@ from functools import wraps
 SUPPORTED_TYPES = (int, float, str, list, dict, bool, type(None))
 
 
-def _check_args(args, annotations_keys, annotations_values):
+def _check_args(args, annotations_keys, annotations_values) -> None:
     for index, arg in enumerate(args):
         if index < len(annotations_values):
             expected_type = annotations_values[index]
@@ -14,7 +14,7 @@ def _check_args(args, annotations_keys, annotations_values):
                 )
 
 
-def _check_kwargs(kwargs, function_annotations):
+def _check_kwargs(kwargs, function_annotations) -> None:
     for key, value in kwargs.items():
         if function_annotations.get(key):
             expected_type = function_annotations[key]
@@ -26,7 +26,7 @@ def _check_kwargs(kwargs, function_annotations):
                 )
 
 
-def _check_return(result, expected_return_type):
+def _check_return(result, expected_return_type) -> None:
     if expected_return_type in SUPPORTED_TYPES and not isinstance(
         result, expected_return_type
     ):
@@ -35,7 +35,7 @@ def _check_return(result, expected_return_type):
         )
 
 
-def type_check(function):
+def type_check(function) -> None:
     @wraps(function)
     def wrapper(*args, **kwargs):
         function_annotations = function.__annotations__
