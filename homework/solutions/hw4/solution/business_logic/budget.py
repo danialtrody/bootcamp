@@ -121,8 +121,6 @@ class Budget(_BudgetHelper):
     def expense(self) -> List[Expense]:
         return self._expense
 
-    # ====================== Public Methods ======================
-
     def add_income(self, income: Income) -> None:
         """Add an Income object."""
         if not isinstance(income, Income):
