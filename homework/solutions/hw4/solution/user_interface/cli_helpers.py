@@ -1,4 +1,4 @@
-def print_error(error: Exception) -> None:
+def print_error(error: Exception | str) -> None:
     """Print an error message."""
     print(f"Error: {error}")
 
