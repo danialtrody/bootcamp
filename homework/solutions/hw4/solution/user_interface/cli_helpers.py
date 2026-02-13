@@ -4,6 +4,9 @@ from solution.business_logic.expense import Expense
 
 
 def add_transaction_ui(budget: Budget, transaction_type: str) -> None:
+    """Prompt the user to add an income or expense to the budget."""  
+
+    
     description = input(f"Enter {transaction_type} description: ").strip()
 
     try:
@@ -39,6 +42,8 @@ def add_transaction_ui(budget: Budget, transaction_type: str) -> None:
 
 
 def remove_transaction_ui(budget: Budget, transaction_type: str) -> None:
+    """Prompt the user to remove an income or expense by description or index."""
+
     while True:
         print(f"1. remove {transaction_type} by description")
         print(f"2. remove {transaction_type} by index")
