@@ -36,15 +36,15 @@ class ProductsService:
     ) -> Product:
 
         new_id = len(self.products) + 1
-        new_item = {
-            "id": new_id,
-            "name": name,
-            "description": description,
-            "price": price,
-            "stock": stock,
-        }
+        new_item = Product(
+            id=new_id,
+            name=name,
+            description=description,
+            price=price,
+            stock=stock,
+        )
 
-        new_product = Product(**new_item)
+        new_product = new_item
         self.products.append(new_product)
 
         with open(JSON_FILE_PATH, WRITE_TO_FILE) as file:
