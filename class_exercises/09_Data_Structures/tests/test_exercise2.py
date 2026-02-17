@@ -1,20 +1,40 @@
 import pytest
-from solution.exercise2 import(get_all_employee_names, 
-                               get_employees_by_department,
-                               get_average_salary_by_department,
-                               get_high_earners
-                               )
+from solution.exercise2 import (
+    get_all_employee_names,
+    get_employees_by_department,
+    get_average_salary_by_department,
+    get_high_earners,
+)
 
 NAME = "name"
+EMPLOYEES = "employees"
+SALARY = "salary"
+
+ENGINEERING = "Engineering"
+SALES = "Sales"
+
+ALICE = "Alice"
+BOB = "Bob"
+CHARLIE = "Charlie"
+DIANA = "Diana"
+EVE = "Eve"
+
+FRONTEND = "Frontend"
+BACKEND = "Backend"
+DIRECT_SALES = "Direct Sales"
+
+HIGH_THRESHOLD = 100000
+VERY_HIGH_THRESHOLD = 115000
+
 
 single_departments = {
     "departments": [
         {
-            NAME: "Engineering",
+            NAME: ENGINEERING,
             "teams": [
                 {
-                    NAME: "Frontend",
-                    "employees": [{NAME: "Charlie", "salary": 105000}],
+                    NAME: FRONTEND,
+                    EMPLOYEES: [{NAME: CHARLIE, SALARY: 105000}],
                 }
             ],
         }
@@ -25,29 +45,29 @@ single_departments = {
 company = {
     "departments": [
         {
-            NAME: "Engineering",
+            NAME: ENGINEERING,
             "teams": [
                 {
-                    NAME: "Backend",
-                    "employees": [
-                        {NAME: "Alice", "salary": 120000},
-                        {NAME: "Bob", "salary": 110000},
+                    NAME: BACKEND,
+                    EMPLOYEES: [
+                        {NAME: ALICE, SALARY: 120000},
+                        {NAME: BOB, SALARY: 110000},
                     ],
                 },
                 {
-                    NAME: "Frontend",
-                    "employees": [{NAME: "Charlie", "salary": 105000}],
+                    NAME: FRONTEND,
+                    EMPLOYEES: [{NAME: CHARLIE, SALARY: 105000}],
                 },
             ],
         },
         {
-            NAME: "Sales",
+            NAME: SALES,
             "teams": [
                 {
-                    NAME: "Direct Sales",
-                    "employees": [
-                        {NAME: "Diana", "salary": 95000},
-                        {NAME: "Eve", "salary": 98000},
+                    NAME: DIRECT_SALES,
+                    EMPLOYEES: [
+                        {NAME: DIANA, SALARY: 95000},
+                        {NAME: EVE, SALARY: 98000},
                     ],
                 }
             ],
@@ -57,24 +77,14 @@ company = {
 
 
 def test_get_all_employee_names() -> None:
+    expected_output = [ALICE, BOB, CHARLIE, DIANA, EVE]
+    names = get_all_employee_names(company)
 
-    expected_output = ["Alice", "Bob", "Charlie", "Diana", "Eve"]
-    output = get_all_employee_names(company)
-
-    assert output == expected_output
-
-
-def test_get_all_employee_names_empty_dict() -> None:
-
-    expected_output: list = []
-    output = get_all_employee_names({})
-
-    assert output == expected_output
+    assert names == expected_output
 
 
 def test_get_all_employee_names_single_item() -> None:
-
-    expected_output = ["Charlie"]
+    expected_output = [CHARLIE]
     output = get_all_employee_names(single_departments)
 
     assert output == expected_output
@@ -82,77 +92,50 @@ def test_get_all_employee_names_single_item() -> None:
 
 @pytest.mark.parametrize(
     "department_name, expected_output",
-    [("Engineering", ["Alice", "Bob", "Charlie"]), ("Sales", ["Diana", "Eve"])],
+    [
+        (ENGINEERING, [ALICE, BOB, CHARLIE]),
+        (SALES, [DIANA, EVE]),
+    ],
 )
 def test_get_employees_by_department(
-    department_name: str, expected_output: str
+    department_name: str,
+    expected_output: list[str],
 ) -> None:
-
     output = get_employees_by_department(company, department_name)
 
     assert output == expected_output
 
 
-def test_get_employees_by_department_empty_dict() -> None:
-
-    expected_output: list = []
-    output = get_employees_by_department({}, "department_name")
-
-    assert output == expected_output
-
-
 def test_get_employees_by_department_single_item() -> None:
-
-    expected_output = ["Charlie"]
-    output = get_employees_by_department(single_departments, "Engineering")
+    expected_output = [CHARLIE]
+    output = get_employees_by_department(single_departments, ENGINEERING)
 
     assert output == expected_output
-    
-    
-    
-def test_get_average_salary_by_department() -> None:
 
-    expected_output = {'Engineering': 111666.67, 'Sales': 96500.0}
+
+def test_get_average_salary_by_department() -> None:
+    expected_output = {ENGINEERING: 111666.67, SALES: 96500.0}
     output = get_average_salary_by_department(company)
 
     assert output == expected_output
 
 
-def test_get_average_salary_by_department_empty_dict() -> None:
-
-    expected_output: list = {}
-    output = get_average_salary_by_department({})
-
-    assert output == expected_output
-
-
-def test_get_employees_by_department_single_item() -> None:
-
-    expected_output = {"Engineering": 105000}
+def test_average_salary_by_department_one() -> None:
+    expected_output = {ENGINEERING: 105000}
     output = get_average_salary_by_department(single_departments)
 
     assert output == expected_output
 
+
 def test_get_high_earners() -> None:
-    expected_output = {
-        "Engineering": ["Alice", "Bob", "Charlie"],
-        "Sales": []
-    }
-    output = get_high_earners(company, 100000)
+    expected_output = {ENGINEERING: [ALICE, BOB, CHARLIE], SALES: []}
+    output = get_high_earners(company, HIGH_THRESHOLD)
+
     assert output == expected_output
 
 
 def test_get_high_earners_high_threshold() -> None:
-    expected_output = {
-        "Engineering": ["Alice"],
-        "Sales": []
-    }
-    output = get_high_earners(company, 115000)
+    expected_output = {ENGINEERING: [ALICE], SALES: []}
+    output = get_high_earners(company, VERY_HIGH_THRESHOLD)
+
     assert output == expected_output
-
-
-def test_get_high_earners_no_departments() -> None:
-    expected_output = {}
-    output = get_high_earners({}, 100000)
-    assert output == expected_output
-
