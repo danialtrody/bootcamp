@@ -1,4 +1,15 @@
 from typing import Any
+from typing import Protocol
+
+
+class HasPrice(Protocol):
+    base_price: float
+    discount_percent: float
+
+
+class HasWeight(Protocol):
+    weight: float
+    shipping_rate_per_kg: float
 
 
 class Item:
@@ -20,14 +31,14 @@ class DiscountMixin:
         self.discount_percent: float = discount_percent
         super().__init__(**kwargs)
 
-    def get_price(self) -> float:
+    def get_price(self: HasPrice) -> float:
         return self.base_price * (1 - self.discount_percent / 100)
 
 
 class ShippingMixin:
     shipping_rate_per_kg: float = 5.0
 
-    def get_shipping_cost(self) -> float:
+    def get_shipping_cost(self: HasWeight) -> float:
         return self.weight * self.shipping_rate_per_kg
 
 
