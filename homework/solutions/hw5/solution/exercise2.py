@@ -1,4 +1,4 @@
-HOURS_MONTH = 160
+MONTH_HOURS = 160
 MONTHS_IN_YEAR = 12
 
 
@@ -9,7 +9,7 @@ class Employee:
         self.hourly_rate = hourly_rate
 
     def calculate_compensation(self) -> float:
-        return self.hourly_rate * HOURS_MONTH
+        return self.hourly_rate * MONTH_HOURS
 
     def display_information(self) -> str:
         return f"Employee ID: {self.employee_id}, Full Name: {self.full_name}, Hourly Rate: ${self.hourly_rate:.2f}/hr"

@@ -2,7 +2,7 @@ from solution.exercise2 import Employee, FullTimeEmployee, Manager
 
 EMPLOYEE_ALICE = "Alice Johnson"
 EMPLOYEE_BOB = "Bob Smith"
-EMPLOYEE_CAROL = "Carol White"
+EMPLOYEE_CAROL = "Carol Whie"
 ENGINEERING = "Engineering"
 BONUS_MANAGER = 0.1
 
