@@ -15,7 +15,7 @@ Terminal 1 - Start the API:
 RUN -> fastapi dev solution/rest_api/budget_planner_api.py
 
 
-Terminal 2 - Start the API:
+Terminal 2 - Start the UI:
 
 RUN -> python main.py
 ```
