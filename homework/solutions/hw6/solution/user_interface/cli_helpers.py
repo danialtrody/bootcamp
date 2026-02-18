@@ -1,68 +1,77 @@
-from solution.business_logic.budget import Budget
-from solution.business_logic.income import Income
-from solution.business_logic.expense import Expense
+import requests
+from starlette.status import (
+    HTTP_201_CREATED,
+    HTTP_200_OK,
+)
+
+API_BASE_URL = "http://localhost:8000"
+ERROR_SERVER = "Server returned an error."
+ERROR_CONNECTION = "Cannot connect to the server. Make sure the API is running."
 
 
-def add_transaction_ui(budget: Budget, transaction_type: str) -> None:
-    """Prompt the user to add an income or expense to the budget."""
+def add_transaction_ui(transaction_type: str) -> None:
+    """Prompt the user to add an income or expense via API."""
 
     description = input(f"Enter {transaction_type} description: ").strip()
-
+    if not description:
+        print("Description cannot be empty.")
+        return
     try:
         amount = float(input(f"Enter {transaction_type} amount: "))
     except ValueError:
-        print_error("Invalid input. Please enter a valid amount.")
+        print("Invalid input. Please enter a valid amount.")
+        return
+    if amount <= 0:
+        print("Amount must be greater than zero.")
         return
 
-    if transaction_type == "income":
-        try:
-            income: Income = Income(description, amount)
-        except ValueError as error:
-            print_error(error)
-            return
-        try:
-            budget.add_income(income)
-        except ValueError as error:
-            print_error(error)
-            return
+    data = {"description": description, "amount": amount}
+
+    endpoint = f"{API_BASE_URL}/{transaction_type}"
+    try:
+        response = requests.post(endpoint, json=data)
+    except requests.exceptions.RequestException:
+        print(ERROR_CONNECTION)
+        return
+
+    if response.status_code == HTTP_201_CREATED:
+        print(f"{transaction_type.capitalize()} added successfully!")
     else:
-        try:
-            expense: Expense = Expense(description, amount)
-        except ValueError as error:
-            print_error(error)
-            return
-        try:
-            budget.add_expense(expense)
-        except ValueError as error:
-            print_error(error)
-            return
-
-    print(f"{transaction_type.capitalize()} added successfully!")
+        print(f"{ERROR_SERVER} (Status code: {response.status_code})")
 
 
-def remove_transaction_ui(budget: Budget, transaction_type: str) -> None:
+def remove_transaction_ui(transaction_type: str) -> None:
     """Prompt the user to remove an income or expense by description or index."""
 
     while True:
         print(f"1. remove {transaction_type} by description")
         print(f"2. remove {transaction_type} by index")
         remove_method = input("Choose a remove method (index-description): ")
-        if remove_method:
+        if remove_method in ("1", "2"):
             description_or_index = handle_remove(transaction_type, remove_method)
             break
+    endpoint = f"{API_BASE_URL}/{transaction_type}"
     try:
-        if transaction_type == "income":
-            budget.remove_income(description_or_index)
+        if isinstance(description_or_index, int):
+            response = requests.delete(f"{endpoint}/index/{description_or_index}")
         else:
-            budget.remove_expense(description_or_index)
+            response = requests.delete(f"{endpoint}/description/{description_or_index}")
 
-    except (ValueError, IndexError) as error:
+    except requests.exceptions.RequestException as error:
         print(f"Error: {error}")
         return
-    print(f"{transaction_type.capitalize()} Removed successfully!")
+    error_data = {}
+    if response.status_code == HTTP_200_OK:
+        print(f"{transaction_type.capitalize()} Removed successfully!")
+    else:
+        try:
+            error_data = response.json()
+        except ValueError:
+            print(f"{ERROR_SERVER} (Status code: {response.status_code})")
+            print(f"{error_data.get('detail', 'Unknown error')}")
 
 
-def handle_remove(remove_item_type: str, remove_method: str) -> int | str:
+def handle_remove(remove_item_type: str, remove_method: str) -> int | str | None:
     """Return description or index for removing an item."""
     match remove_method:
         case "1":
@@ -74,9 +83,5 @@ def handle_remove(remove_item_type: str, remove_method: str) -> int | str:
                 print(f"Error: {error}")
         case _:
             print("\nEnter a valid number 1 or 2")
-    return 0
-
-
-def print_error(error: Exception | str) -> None:
-    """Print an error message."""
-    print(f"Error: {error}")
+            return None
+    return None
