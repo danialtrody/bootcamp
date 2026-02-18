@@ -5,13 +5,21 @@
 1. **Navigate to the project directory**:
 
 ```bash
-cd /bootcamp/homework/solutions/hw4
+cd /bootcamp/homework/solutions/hw6
 ```
 2. **Run the application**:
 
 ```
-python -m solution.main
+Terminal 1 - Start the API:
+
+RUN -> fastapi dev solution/rest_api/budget_planner_api.py
+
+
+Terminal 1 - Start the API:
+
+RUN -> python main.py
 ```
+
 
 3. **Running Unit Tests**
 
