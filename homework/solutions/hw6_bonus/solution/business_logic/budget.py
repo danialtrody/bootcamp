@@ -4,6 +4,7 @@ from solution.business_logic.expense import Expense
 from solution.business_logic.income import Income
 from solution.repository.income_repository import IncomeRepository
 from solution.repository.expense_repository import ExpenseRepository
+from typing import Optional
 
 from typing import List, Protocol
 
@@ -42,12 +43,12 @@ class _BudgetHelper:
         income_lines = "\n".join(
             f"  {index}. {income.description}  ${income.amount:,.2f}"
             for index, income in enumerate(self.income, start=1)
-        ) + ("\n" if self.income else "")
+        ) + "\n"
 
         expense_lines = "\n".join(
-            f"  {index}. {expense.description}  ${expense.amount:,.2f}"
+            f"  {index}. {expense.description:}  ${expense.amount:,.2f}"
             for index, expense in enumerate(self.expense, start=1)
-        ) + ("\n" if self.expense else "")
+        ) + "\n"
 
         total_income = self.total_income()
         total_expense = self.total_expense()
@@ -87,17 +88,23 @@ class _BudgetHelper:
 
     def _remove_item_by_description(self, lst: list, description_or_index: str) -> None:
         """Remove first item in list matching description."""
-        item_type = "income" if lst and isinstance(lst[0], Income) else "expense"
+        if not lst:
+            raise ValueError("List is empty.")
+
+        item_type = "income" if isinstance(lst[0], Income) else "expense"
+
         for item in lst:
-            if item.description == description_or_index:
-                lst.remove(item)
-                # Remove from repository if _id exists
-                if hasattr(item, "_id"):
-                    if item_type == "income":
-                        IncomeRepository().delete(item._id)
-                    else:
-                        ExpenseRepository().delete(item._id)
-                return
+            if item.description != description_or_index:
+                continue
+
+            lst.remove(item)
+
+            if hasattr(item, "_id"):
+                repository = IncomeRepository() if item_type == "income" else ExpenseRepository()
+                repository.delete(item._id)
+
+            return
+
         raise ValueError(
             f"No {item_type} found with description '{description_or_index}'. "
             f"Please make sure the description matches an existing {item_type}."
@@ -111,13 +118,12 @@ class _BudgetHelper:
                 f"Invalid index {description_or_index}. "
                 f"Index must be between 1 and {list_length}."
             )
+
         item = lst.pop(description_or_index - 1)
-        # Remove from repository if _id exists
-        if hasattr(item, "_id"):
-            if isinstance(item, Income):
-                IncomeRepository().delete(item._id)
-            else:
-                ExpenseRepository().delete(item._id)
+
+        if hasattr(item, "_id") and item._id is not None:
+            repository = IncomeRepository() if isinstance(item, Income) else ExpenseRepository()
+            repository.delete(item._id)
 
 
 class Budget(_BudgetHelper):
@@ -125,16 +131,14 @@ class Budget(_BudgetHelper):
 
     def __init__(
         self,
-        income_repository: IncomeRepository = None,
-        expense_repository: ExpenseRepository = None,
+        income_repository: Optional[IncomeRepository] = None,
+        expense_repository: Optional[ExpenseRepository] = None,
     ) -> None:
         """Initialize Budget with optional repositories."""
 
-        # קודם יוצרים repositories
         self._income_repository = income_repository or IncomeRepository()
         self._expense_repository = expense_repository or ExpenseRepository()
 
-        # ורק אחרי זה טוענים מהם נתונים
         self._income = self._income_repository.get_all()
         self._expense = self._expense_repository.get_all()
 

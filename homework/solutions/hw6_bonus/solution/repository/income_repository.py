@@ -1,5 +1,7 @@
+from typing import cast
 from solution.business_logic.income import Income
 from .file_accessor import JsonFileAccessor
+from solution.business_logic.protocols import HasID
 
 DATA_FILE_PATH = "data/incomes.json"
 
@@ -7,14 +9,14 @@ DATA_FILE_PATH = "data/incomes.json"
 class IncomeRepository:
     """Repository for managing income data persistence."""
 
-    def __init__(self, file_accessor: JsonFileAccessor = None):
+    def __init__(self, file_accessor: JsonFileAccessor | None = None):
         self.file_accessor = file_accessor or JsonFileAccessor(DATA_FILE_PATH)
 
     def create(self, item: Income) -> None:
         data = self.file_accessor.read()
-        new_id = max((int(k) for k in data.keys()), default=0) + 1
+        new_id = max((int(key) for key in data.keys()), default=0) + 1
         data[str(new_id)] = item.__dict__
-        item._id = new_id  # internal ID for JSON
+        cast(HasID, item)._id = new_id  # <-- שימוש בפרוטוקול
         self.file_accessor.write(data)
 
     def get(self, item_id: int) -> Income:
@@ -23,15 +25,17 @@ class IncomeRepository:
         if not item_data:
             raise ValueError(f"Item with id {item_id} not found")
         income = Income(**item_data)
-        income._id = item_id
+        cast(HasID, income)._id = item_id  # <-- כאן גם
         return income
 
     def get_all(self) -> list[Income]:
         data = self.file_accessor.read()
-        result = []
+        result: list[Income] = []
         for key, item_data in data.items():
+            item_data = dict(item_data)
+            item_data.pop("_id", None)
             income = Income(**item_data)
-            income._id = int(key)
+            cast(HasID, income)._id = int(key)  # <-- כאן
             result.append(income)
         return result
 
@@ -46,7 +50,7 @@ class IncomeRepository:
     def delete(self, item_id: int) -> None:
         data = self.file_accessor.read()
         if str(item_id) in data:
-            del data[str(item_id)]
+            data.pop(str(item_id), None)
             self.file_accessor.write(data)
         else:
             raise ValueError(f"Item with id {item_id} not found")

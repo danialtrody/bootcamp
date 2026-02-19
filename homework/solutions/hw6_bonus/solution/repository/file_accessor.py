@@ -1,6 +1,5 @@
 import json
 import os
-from typing import Any
 
 READ_FROM_FILE = "r"
 WRITE_TO_FILE = "w"

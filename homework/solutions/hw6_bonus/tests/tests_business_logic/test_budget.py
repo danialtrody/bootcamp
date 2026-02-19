@@ -2,9 +2,6 @@ from solution.business_logic.budget import Budget
 from solution.business_logic.income import Income
 from solution.business_logic.expense import Expense
 
-
-
-
 DESCRIPTION = "description"
 AMOUNT_HUNDRED = 100
 AMOUNT_TWO_HUNDRED = 200

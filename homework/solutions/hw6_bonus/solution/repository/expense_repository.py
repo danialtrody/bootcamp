@@ -1,5 +1,7 @@
+from typing import cast
 from solution.business_logic.expense import Expense
 from .file_accessor import JsonFileAccessor
+from solution.business_logic.protocols import HasID
 
 DATA_FILE_PATH = "data/expenses.json"
 
@@ -7,14 +9,14 @@ DATA_FILE_PATH = "data/expenses.json"
 class ExpenseRepository:
     """Repository for managing expense data persistence."""
 
-    def __init__(self, file_accessor: JsonFileAccessor = None):
+    def __init__(self, file_accessor: JsonFileAccessor | None = None):
         self.file_accessor = file_accessor or JsonFileAccessor(DATA_FILE_PATH)
 
     def create(self, item: Expense) -> None:
         data = self.file_accessor.read()
-        new_id = max((int(k) for k in data.keys()), default=0) + 1
+        new_id = max((int(key) for key in data.keys()), default=0) + 1
         data[str(new_id)] = item.__dict__
-        item._id = new_id  # internal ID for JSON
+        cast(HasID, item)._id = new_id  # <-- cast ל־Protocol
         self.file_accessor.write(data)
 
     def get(self, item_id: int) -> Expense:
@@ -23,15 +25,15 @@ class ExpenseRepository:
         if not item_data:
             raise ValueError(f"Item with id {item_id} not found")
         expense = Expense(**item_data)
-        expense._id = item_id
+        cast(HasID, expense)._id = item_id  # <-- cast ל־Protocol
         return expense
 
     def get_all(self) -> list[Expense]:
         data = self.file_accessor.read()
-        result = []
+        result: list[Expense] = []
         for key, item_data in data.items():
             expense = Expense(**item_data)
-            expense._id = int(key)
+            cast(HasID, expense)._id = int(key)  # <-- cast ל־Protocol
             result.append(expense)
         return result
 
@@ -46,7 +48,7 @@ class ExpenseRepository:
     def delete(self, item_id: int) -> None:
         data = self.file_accessor.read()
         if str(item_id) in data:
-            del data[str(item_id)]
+            data.pop(str(item_id), None)
             self.file_accessor.write(data)
         else:
             raise ValueError(f"Item with id {item_id} not found")
