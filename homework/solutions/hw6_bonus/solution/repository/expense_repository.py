@@ -16,7 +16,7 @@ class ExpenseRepository:
         data = self.file_accessor.read()
         new_id = max((int(key) for key in data.keys()), default=0) + 1
         data[str(new_id)] = item.__dict__
-        cast(HasID, item)._id = new_id  # <-- cast ל־Protocol
+        cast(HasID, item)._id = new_id
         self.file_accessor.write(data)
 
     def get(self, item_id: int) -> Expense:
@@ -25,7 +25,7 @@ class ExpenseRepository:
         if not item_data:
             raise ValueError(f"Item with id {item_id} not found")
         expense = Expense(**item_data)
-        cast(HasID, expense)._id = item_id  # <-- cast ל־Protocol
+        cast(HasID, expense)._id = item_id
         return expense
 
     def get_all(self) -> list[Expense]:
@@ -33,7 +33,7 @@ class ExpenseRepository:
         result: list[Expense] = []
         for key, item_data in data.items():
             expense = Expense(**item_data)
-            cast(HasID, expense)._id = int(key)  # <-- cast ל־Protocol
+            cast(HasID, expense)._id = int(key)
             result.append(expense)
         return result
 

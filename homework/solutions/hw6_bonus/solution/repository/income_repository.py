@@ -16,7 +16,7 @@ class IncomeRepository:
         data = self.file_accessor.read()
         new_id = max((int(key) for key in data.keys()), default=0) + 1
         data[str(new_id)] = item.__dict__
-        cast(HasID, item)._id = new_id  # <-- שימוש בפרוטוקול
+        cast(HasID, item)._id = new_id
         self.file_accessor.write(data)
 
     def get(self, item_id: int) -> Income:
@@ -25,7 +25,7 @@ class IncomeRepository:
         if not item_data:
             raise ValueError(f"Item with id {item_id} not found")
         income = Income(**item_data)
-        cast(HasID, income)._id = item_id  # <-- כאן גם
+        cast(HasID, income)._id = item_id
         return income
 
     def get_all(self) -> list[Income]:
@@ -35,7 +35,7 @@ class IncomeRepository:
             item_data = dict(item_data)
             item_data.pop("_id", None)
             income = Income(**item_data)
-            cast(HasID, income)._id = int(key)  # <-- כאן
+            cast(HasID, income)._id = int(key)
             result.append(income)
         return result
 
