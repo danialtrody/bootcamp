@@ -10,13 +10,13 @@ cd /bootcamp/homework/solutions/hw4
 2. **Run the application**:
 
 ```
-python -m solution.main
+python main.py
 ```
 
 3. **Running Unit Tests**
 
 ```
-pytest .
+pytest
 ```
 
 **Note: This is the initial version of the Budget Planner CLI.** 
