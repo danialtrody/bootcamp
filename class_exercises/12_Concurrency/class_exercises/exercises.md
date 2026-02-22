@@ -101,3 +101,34 @@ Total execution time: 1.23 seconds
 Average time per request: 0.062 seconds
 ```
 
+
+### Part 3: Asyncio with aiohttp Implementation
+
+**Requirements:**
+- Create a program named `fetch_todos_asyncio.py`
+- Use `asyncio` for concurrency
+- Use the `aiohttp` library for HTTP requests (you'll need to install it: `pip install aiohttp`)
+- Create an async function `async def fetch_todo(session: aiohttp.ClientSession, todo_id: int) -> dict[str, Any]` that fetches a single TODO item
+- Use `asyncio.gather()` to fetch all 20 items concurrently
+- Print each TODO title as it's received
+- Measure execution time and print summary statistics
+- Properly manage the aiohttp ClientSession (use async context manager)
+
+**Example Output:**
+```
+Fetching 20 TODO items using asyncio and aiohttp...
+TODO 2: quis ut nam facilis et officia qui
+TODO 1: delectus aut autem
+TODO 5: laboriosam mollitia et enim quasi adipisci quia provident illum
+TODO 3: fugiat veniam minus
+...
+TODO 20: ullam nobis libero sapiente ad optio sint
+
+Summary:
+Total execution time: 0.42 seconds
+Average time per request: 0.021 seconds
+```
+
+**Hints:**
+- Look at `modules\12_Concurrency\demos\async_download_and_process.py`
+- And `modules\12_Concurrency\demos\good_and_bad_async_handlers\good_request_handler.py`
