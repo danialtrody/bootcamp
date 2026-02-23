@@ -2,18 +2,20 @@ import asyncio
 import aiohttp
 import time
 
-FETCH_URL = "http://localhost:8000/process_order?user_id=123&product_id=456&zip_code=12345"
+FETCH_URL = (
+    "http://localhost:8000/process_order?user_id=123&product_id=456&zip_code=12345"
+)
 CONCURRENT_REQUESTS = 20
 
 
-async def send_request(session):
+async def send_request(session: aiohttp) -> float:
     start = time.time()
     async with session.get(FETCH_URL) as response:
         await response.json()
     return time.time() - start
 
 
-async def main():
+async def main() -> None:
     start_time = time.time()
 
     async with aiohttp.ClientSession() as session:
