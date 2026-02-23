@@ -8,9 +8,7 @@ REQUESTS = 20
 TODOS_URL = "https://jsonplaceholder.typicode.com/todos"
 
 
-async def fetch_todo(session: aiohttp.ClientSession,
-                     todo_id: int
-                     ) -> dict[str, Any]:
+async def fetch_todo(session: aiohttp.ClientSession, todo_id: int) -> dict[str, Any]:
     async with session.get(f"{TODOS_URL}/{todo_id}") as response:
         return await response.json()
 
@@ -19,11 +17,11 @@ async def run_requests() -> float:
     start_time = time.time()
 
     async with aiohttp.ClientSession() as session:
-        tasks = [fetch_todo(session, todo_id)
-                 for todo_id in range(1, REQUESTS + 1)]
+        tasks = [fetch_todo(session, todo_id) for todo_id in range(1, REQUESTS + 1)]
 
-        for task in asyncio.as_completed(tasks):
-            print(f"TODO {task['id']}: {task['title']}")
+        todos = await asyncio.gather(*tasks)
+        for todo in todos:
+            print(f"TODO {todo['id']}: {todo['title']}")
 
     return time.time() - start_time
 

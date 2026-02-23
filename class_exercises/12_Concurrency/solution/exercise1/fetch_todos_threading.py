@@ -25,8 +25,7 @@ def run_requests() -> float:
 
     with ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
         futures = [
-            executor.submit(fetch_todo, todo_id)
-            for todo_id in range(1, REQUESTS + 1)
+            executor.submit(fetch_todo, todo_id) for todo_id in range(1, REQUESTS + 1)
         ]
 
         for future in as_completed(futures):
