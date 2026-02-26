@@ -227,6 +227,3 @@ Total revenue this month
 Average order value this month
 The cuisine type with the highest revenue this month
 */
-
-
-
