@@ -227,3 +227,40 @@ Total revenue this month
 Average order value this month
 The cuisine type with the highest revenue this month
 */
+
+SELECT 
+
+(SELECT COUNT(*) FROM restaurants
+WHERE is_active = 1) 
+AS 'Total active restaurants',
+
+(SELECT COUNT(id) FROM customers)
+AS 'Total customers',
+
+(SELECT COUNT(*) FROM orders
+WHERE status = 'delivered' and MONTH(time) = MONTH(CURRENT_DATE) and YEAR(time) = YEAR(CURRENT_DATE)
+) AS 'Total delivered orders this month' ,
+
+(SELECT SUM(menu.price) FROM orders
+JOIN restaurants ON orders.restaurant_id = restaurants.id
+JOIN menu ON menu.restaurant_id = restaurants.id
+JOIN order_items ON order_items.menu_id = menu.id
+WHERE status = 'delivered' and MONTH(time) = MONTH(CURRENT_DATE) and YEAR(time) = YEAR(CURRENT_DATE)
+) AS 'Total revenue this month',
+
+(SELECT SUM(menu.price)/ COUNT(DISTINCT orders.id) FROM orders
+JOIN restaurants ON orders.restaurant_id = restaurants.id
+JOIN menu ON menu.restaurant_id = restaurants.id
+JOIN order_items ON order_items.menu_id = menu.id
+WHERE status = 'delivered' and MONTH(time) = MONTH(CURRENT_DATE) and YEAR(time) = YEAR(CURRENT_DATE)
+) AS 'Average order value this month',
+
+(SELECT restaurants.cuisine_type FROM orders 
+JOIN restaurants ON orders.restaurant_id = restaurants.id
+JOIN menu ON menu.restaurant_id = restaurants.id
+JOIN order_items ON order_items.menu_id = menu.id
+WHERE status = 'delivered' and MONTH(time) = MONTH(CURRENT_DATE) and YEAR(time) = YEAR(CURRENT_DATE)
+GROUP BY restaurants.cuisine_type
+ORDER BY SUM(menu.price) DESC
+LIMIT 1
+) AS 'The cuisine type with the highest revenue this month';
