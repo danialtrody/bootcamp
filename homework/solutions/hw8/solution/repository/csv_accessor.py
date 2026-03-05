@@ -33,5 +33,5 @@ class CsvFileAccessor:
 
     def ensure_file_exists(self) -> None:
         if not os.path.exists(self.file_path):
-            with open(self.file_path, CREATE_OR_UPDATE_FILE, newline=""):
-                ...
+            with open(self.file_path, WRITE_TO_FILE, newline=""):
+                return
