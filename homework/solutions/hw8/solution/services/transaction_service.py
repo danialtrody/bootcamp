@@ -40,6 +40,9 @@ class TransactionService:
         return transactions
 
     def add_income(self, transaction: Transaction) -> Transaction:
+
+        if transaction is None:
+            raise ValueError("Transaction cannot be None")
         if transaction.amount <= 0:
             raise ValueError("Income amount must be positive")
         transaction.type = "income"
