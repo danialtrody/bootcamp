@@ -1,6 +1,5 @@
 from solution.repository.csv_accessor import CsvFileAccessor
 from typing import Generic, TypeVar, Type
-from dataclasses import asdict
 from typing import Protocol
 from dataclasses import is_dataclass
 
@@ -23,7 +22,7 @@ class BaseRepository(Generic[EntityType]):
             raise ValueError("Repository accepts only dataclass entities")
 
         data = self.accessor.read()
-        data.append(asdict(item))
+        data.append(item.__dict__)
         self.accessor.write(data)
         return item
 
@@ -48,7 +47,7 @@ class BaseRepository(Generic[EntityType]):
         data = self.accessor.read()
         for index, row in enumerate(data):
             if str(row.get("id")) == str(item.id):
-                data[index] = asdict(item)
+                data[index] = item.__dict__
                 self.accessor.write(data)
                 return item
         modal_name = self._model_type.__name__
