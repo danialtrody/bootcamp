@@ -1,0 +1,109 @@
+from unittest.mock import MagicMock
+
+import pytest
+from solution.services.account_service import AccountService
+from solution.models.account import Account
+from typing import List, Dict
+from decimal import Decimal
+
+
+def test_get_account_success() -> None:
+    mock_repository = MagicMock()
+    service = AccountService(mock_repository)
+
+    expected_account = Account(id=1, name="TEST", opening_balance=Decimal("100"))
+
+    mock_repository.get.return_value = expected_account
+
+    result = service.get_account(1)
+
+    assert result == expected_account
+    mock_repository.get.assert_called_once_with(1)
+
+
+@pytest.mark.parametrize(
+    "test_data",
+    [
+        ([{"id": 1, "name": "TEST", "opening_balance": "0"}]),
+        (
+            [
+                {"id": 1, "name": "TEST", "opening_balance": "100"},
+                {"id": 2, "name": "TEST2", "opening_balance": "1"},
+            ]
+        ),
+    ],
+)
+def test_get_all_accounts(test_data: List[Dict]) -> None:
+    mock_repository = MagicMock()
+    mock_repository.get_all.return_value = test_data
+    service = AccountService(mock_repository)
+    result = service.get_all_accounts()
+
+    assert result == test_data
+    mock_repository.get_all.assert_called_once()
+
+
+@pytest.mark.parametrize(
+    "test_data",
+    [
+        (Account(id=1, name="TEST", opening_balance=Decimal("0"))),
+        (Account(id=2, name="TEST2", opening_balance=Decimal("100"))),
+    ],
+)
+def test_add_account_succes(test_data: Account) -> None:
+    mock_repository = MagicMock()
+    mock_repository.create.return_value = test_data
+    service = AccountService(mock_repository)
+
+    result = service.add_account(test_data)
+
+    assert result == test_data
+    mock_repository.create.assert_called_once_with(test_data)
+
+
+@pytest.mark.parametrize(
+    "test_data, error",
+    [
+        (None, "Account cannot be None"),
+        (
+            Account(id=1, name="", opening_balance=Decimal("0")),
+            "Account name cannot be empty",
+        ),
+    ],
+)
+def test_add_account_fail(test_data: Account, error: str) -> None:
+    mock_repository = MagicMock()
+    service = AccountService(mock_repository)
+
+    with pytest.raises(ValueError, match=error):
+        service.add_account(test_data)
+
+
+@pytest.mark.parametrize(
+    "data, updated_data",
+    [
+        (
+            Account(id=1, name="TEST", opening_balance=Decimal("0")),
+            Account(id=1, name="UPDATED_TEST", opening_balance=Decimal("0")),
+        )
+    ],
+)
+def test_update_account_success(data: Account, updated_data: Account) -> None:
+    mock_repository = MagicMock()
+    service = AccountService(mock_repository)
+    mock_repository.read.return_value = data
+    mock_repository.update.return_value = updated_data
+
+    result = service.update_account(updated_data)
+    assert result == updated_data
+
+    mock_repository.update.assert_called_once_with(updated_data)
+
+
+def test_delete_account() -> None:
+    mock_repository = MagicMock()
+    service = AccountService(mock_repository)
+    mock_repository.delete.return_value = None
+    service.delete_account(1)
+
+    mock_repository.delete.assert_called_once_with(1)
