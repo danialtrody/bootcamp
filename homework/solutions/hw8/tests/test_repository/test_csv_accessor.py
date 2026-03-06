@@ -18,7 +18,7 @@ def test_create_success() -> None:
     mock_accessor.read.assert_called_once()
 
     mock_accessor.write.assert_called_once_with(
-        [{"id": 1, "name": "TEST", "type": CategoryType.INCOME}]
+        [{"id": 1, "name": "TEST", "type": "income"}]
     )
 
 
@@ -89,7 +89,7 @@ def test_update_success() -> None:
     mock_accessor.read.assert_called_once()
 
     mock_accessor.write.assert_called_once_with(
-        [{"id": 1, "name": "updated", "type": CategoryType.INCOME}]
+        [{"id": 1, "name": "updated", "type": "income"}]
     )
 
 
