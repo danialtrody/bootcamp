@@ -60,6 +60,7 @@ class BaseRepository(Generic[EntityType]):
         for index, row in enumerate(data):
             if str(row.get("id")) == str(item_id):
                 data.pop(index)
+                self.accessor.write(data)
                 return
         modal_name = self._model_type.__name__
         raise ValueError(
