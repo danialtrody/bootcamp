@@ -27,14 +27,8 @@ class TransferService:
         if transfer.amount <= 0:
             raise ValueError("Transfer amount must be positive")
 
-        source_account = self.account_repository.get(transfer.from_account_id)
-        destination_account = self.account_repository.get(transfer.to_account_id)
-
-        source_account.opening_balance -= transfer.amount
-        destination_account.opening_balance += transfer.amount
-
-        self.account_repository.update(source_account)
-        self.account_repository.update(destination_account)
+        self.account_repository.get(transfer.from_account_id)
+        self.account_repository.get(transfer.to_account_id)
 
         return self.transfer_repository.create(transfer)
 
