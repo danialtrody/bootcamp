@@ -1,3 +1,4 @@
+from solution.services.transaction_service import TransactionService
 from solution.services.account_service import AccountService
 from solution.services.net_worth_service import NetWorth
 from solution.services.category_service import CategoryService
@@ -51,6 +52,10 @@ category_service = CategoryService(
     category_repository
 )
 
+transaction_service = TransactionService(
+    transaction_repository
+)
+
 
 def get_account_service() -> AccountService:
     return account_service
@@ -62,3 +67,7 @@ def get_net_worth_service() -> NetWorth:
 
 def get_category_service() -> CategoryService:
     return category_service
+
+
+def get_transaction_service() -> TransactionService:
+    return transaction_service
