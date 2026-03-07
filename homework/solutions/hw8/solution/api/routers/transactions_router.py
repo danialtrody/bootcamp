@@ -28,20 +28,20 @@ def get_all_transactions(
 def add_income(
     transaction: Transaction, service: TransactionService = account_service_dependency
 ) -> Transaction:
-        try:
-            return service.add_income(transaction)
-        except ValueError as error:
-            raise HTTPException(status_code=HTTP_400_BAD_REQUEST, detail=str(error))
+    try:
+        return service.add_income(transaction)
+    except ValueError as error:
+        raise HTTPException(status_code=HTTP_400_BAD_REQUEST, detail=str(error))
 
 
 @router.post("/expense", status_code=HTTP_201_CREATED)
-def add_income(
+def add_expense(
     transaction: Transaction, service: TransactionService = account_service_dependency
 ) -> Transaction:
-        try:
-            return service.add_expense(transaction)
-        except ValueError as error:
-            raise HTTPException(status_code=HTTP_400_BAD_REQUEST, detail=str(error))
+    try:
+        return service.add_expense(transaction)
+    except ValueError as error:
+        raise HTTPException(status_code=HTTP_400_BAD_REQUEST, detail=str(error))
 
 
 @router.delete("/{transaction_id}", status_code=HTTP_200_OK)

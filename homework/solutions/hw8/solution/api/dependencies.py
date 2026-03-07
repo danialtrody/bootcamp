@@ -1,3 +1,5 @@
+# flake8: noqa: WPS201
+
 from solution.services.transaction_service import TransactionService
 from solution.services.account_service import AccountService
 from solution.services.net_worth_service import NetWorth
@@ -9,7 +11,10 @@ from solution.services.dashboard_service import DashboardService
 from solution.repository.csv_accessor import CsvFileAccessor
 from solution.repository.base_repository import BaseRepository
 
-from solution.models import Account, Transaction, Transfer, Category
+from solution.models.account import Account
+from solution.models.transaction import Transaction
+from solution.models.transfer import Transfer
+from solution.models.categories import Category
 
 
 # Repositories
@@ -91,7 +96,7 @@ def get_transfer_service() -> TransferService:
     return transfer_service
 
 
-def get_report_service() -> TransferService:
+def get_report_service() -> ReportService:
     return reports_service
 
 
