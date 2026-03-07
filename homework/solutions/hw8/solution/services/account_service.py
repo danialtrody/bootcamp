@@ -29,13 +29,19 @@ class AccountService:
         self._check_existing_accounts(account)
         return self.account_repository.create(account)
 
-    def update_account(self, account: Account) -> Account:
-        self._validate_account(account)
-        self._check_existing_accounts(account)
+    def update_account(self, account_id: int, updated_name: str) -> Account:
+        account = self.account_repository.get(account_id)
 
-        self.account_repository.get(account.id)
+        new_account = Account(
+            id=account.id,
+            name=updated_name,
+            opening_balance=account.opening_balance,
+        )
 
-        return self.account_repository.update(account)
+        self._validate_account(new_account)
+        self._check_existing_accounts(new_account)
+
+        return self.account_repository.update(new_account)
 
     def delete_account(self, account_id: int) -> None:
         self.account_repository.delete(account_id)

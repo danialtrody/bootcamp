@@ -102,16 +102,19 @@ def test_add_account_fail(test_data: Account, error: str) -> None:
         service.add_account(test_data)
 
 
-@pytest.mark.parametrize(
-    "data, updated_data",
-    [
-        (
-            Account(id=1, name="TEST", opening_balance=Decimal("0")),
-            Account(id=1, name="UPDATED_TEST", opening_balance=Decimal("0")),
-        )
-    ],
-)
-def test_update_account_success(data: Account, updated_data: Account) -> None:
+def test_update_account_success():
+    original_account = Account(
+        id=1,
+        name="TEST",
+        opening_balance=Decimal("0")
+    )
+
+    updated_account = Account(
+        id=1,
+        name="UPDATED_TEST",
+        opening_balance=Decimal("0")
+    )
+
     mock_repository = MagicMock()
     mock_transaction_repository = MagicMock()
     mock_transfer_repository = MagicMock()
@@ -120,13 +123,13 @@ def test_update_account_success(data: Account, updated_data: Account) -> None:
         mock_repository, mock_transaction_repository, mock_transfer_repository
     )
 
-    mock_repository.read.return_value = data
-    mock_repository.update.return_value = updated_data
+    mock_repository.get.return_value = original_account
+    mock_repository.update.return_value = updated_account
 
-    result = service.update_account(updated_data)
-    assert result == updated_data
+    result = service.update_account(1, "UPDATED_TEST")
 
-    mock_repository.update.assert_called_once_with(updated_data)
+    assert result == updated_account
+    mock_repository.update.assert_called_once_with(updated_account)
 
 
 def test_delete_account() -> None:
