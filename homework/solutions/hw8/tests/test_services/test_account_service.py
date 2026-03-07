@@ -6,6 +6,8 @@ from solution.models.account import Account
 from typing import List, Dict
 from decimal import Decimal
 
+TEST_ACCOUNT_NAME = "TEST"
+
 
 def test_get_account_success() -> None:
     mock_repository = MagicMock()
@@ -16,7 +18,7 @@ def test_get_account_success() -> None:
         mock_repository, mock_transaction_repository, mock_transfer_repository
     )
 
-    expected_account = Account(id=1, name="TEST", opening_balance=Decimal("100"))
+    expected_account = Account(id=1, name=TEST_ACCOUNT_NAME, opening_balance=Decimal("100"))
 
     mock_repository.get.return_value = expected_account
 
@@ -29,10 +31,10 @@ def test_get_account_success() -> None:
 @pytest.mark.parametrize(
     "test_data",
     [
-        ([{"id": 1, "name": "TEST", "opening_balance": "0"}]),
+        ([{"id": 1, "name": TEST_ACCOUNT_NAME, "opening_balance": "0"}]),
         (
             [
-                {"id": 1, "name": "TEST", "opening_balance": "100"},
+                {"id": 1, "name": TEST_ACCOUNT_NAME, "opening_balance": "100"},
                 {"id": 2, "name": "TEST2", "opening_balance": "1"},
             ]
         ),
@@ -58,8 +60,8 @@ def test_get_all_accounts(test_data: List[Dict]) -> None:
 @pytest.mark.parametrize(
     "test_data",
     [
-        (Account(id=1, name="TEST", opening_balance=Decimal("0"))),
-        (Account(id=2, name="TEST2", opening_balance=Decimal("100"))),
+        (Account(id=1, name=TEST_ACCOUNT_NAME, opening_balance=Decimal("10"))),
+        (Account(id=2, name="TEST2", opening_balance=Decimal("200"))),
     ],
 )
 def test_add_account_succes(test_data: Account) -> None:
@@ -84,7 +86,7 @@ def test_add_account_succes(test_data: Account) -> None:
     [
         (None, "Account cannot be None"),
         (
-            Account(id=1, name="", opening_balance=Decimal("0")),
+            Account(id=1, name="", opening_balance=Decimal("10")),
             "Account name cannot be empty",
         ),
     ],
@@ -102,18 +104,10 @@ def test_add_account_fail(test_data: Account, error: str) -> None:
         service.add_account(test_data)
 
 
-def test_update_account_success():
-    original_account = Account(
-        id=1,
-        name="TEST",
-        opening_balance=Decimal("0")
-    )
+def test_update_account_success() -> None:
+    original_account = Account(id=1, name=TEST_ACCOUNT_NAME, opening_balance=Decimal("110"))
 
-    updated_account = Account(
-        id=1,
-        name="UPDATED_TEST",
-        opening_balance=Decimal("0")
-    )
+    updated_account = Account(id=1, name="UPDATED_TEST", opening_balance=Decimal("110"))
 
     mock_repository = MagicMock()
     mock_transaction_repository = MagicMock()
@@ -126,7 +120,7 @@ def test_update_account_success():
     mock_repository.get.return_value = original_account
     mock_repository.update.return_value = updated_account
 
-    result = service.update_account(1, "UPDATED_TEST")
+    result = service.update_account_name(1, "UPDATED_TEST")
 
     assert result == updated_account
     mock_repository.update.assert_called_once_with(updated_account)
@@ -158,7 +152,7 @@ def test_get_account_balance() -> None:
         mock_transfer_repository,
     )
 
-    account = Account(id=1, name="TEST", opening_balance=Decimal("100"))
+    account = Account(id=1, name=TEST_ACCOUNT_NAME, opening_balance=Decimal("1000"))
 
     mock_account_repository.get.return_value = account
 
@@ -167,4 +161,4 @@ def test_get_account_balance() -> None:
 
     result = service.get_account_balance(1)
 
-    assert result == Decimal("100")
+    assert result == Decimal("1000")

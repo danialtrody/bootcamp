@@ -24,28 +24,6 @@ class AccountService:
     def get_all_accounts(self) -> List[Account]:
         return self.account_repository.get_all()
 
-    def add_account(self, account: Account) -> Account:
-        self._validate_account(account)
-        self._check_existing_accounts(account)
-        return self.account_repository.create(account)
-
-    def update_account(self, account_id: int, updated_name: str) -> Account:
-        account = self.account_repository.get(account_id)
-
-        new_account = Account(
-            id=account.id,
-            name=updated_name,
-            opening_balance=account.opening_balance,
-        )
-
-        self._validate_account(new_account)
-        self._check_existing_accounts(new_account)
-
-        return self.account_repository.update(new_account)
-
-    def delete_account(self, account_id: int) -> None:
-        self.account_repository.delete(account_id)
-
     def get_account_balance(self, account_id: int) -> Decimal:
         account = self.account_repository.get(account_id)
 
@@ -67,6 +45,28 @@ class AccountService:
                 balance += transfer.amount
 
         return balance
+
+    def add_account(self, account: Account) -> Account:
+        self._validate_account(account)
+        self._check_existing_accounts(account)
+        return self.account_repository.create(account)
+
+    def update_account_name(self, account_id: int, updated_name: str) -> Account:
+        account = self.account_repository.get(account_id)
+
+        new_account = Account(
+            id=account.id,
+            name=updated_name,
+            opening_balance=account.opening_balance,
+        )
+
+        self._validate_account(new_account)
+        self._check_existing_accounts(new_account)
+
+        return self.account_repository.update(new_account)
+
+    def delete_account(self, account_id: int) -> None:
+        self.account_repository.delete(account_id)
 
     def _validate_account(self, account: Account) -> None:
         if account is None:
