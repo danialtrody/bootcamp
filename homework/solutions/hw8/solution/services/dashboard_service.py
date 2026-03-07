@@ -11,7 +11,7 @@ class DashboardService:
         self.net_worth_service = net_worth_service
         self.report_service = report_service
 
-    def get_dashboard_summary(self, account_id: int) -> Dict[str, Any]:
+    def get_dashboard_summary(self) -> Dict[str, Any]:
 
         result: Dict[str, Any] = {}
 
@@ -22,7 +22,7 @@ class DashboardService:
         year = now.year
 
         get_monthly_summary = self.report_service.get_monthly_summary(
-            month, year, account_id
+            month, year
         )
 
         result["total_income"] = get_monthly_summary.get("total_income")

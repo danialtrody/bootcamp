@@ -2,6 +2,7 @@ from decimal import Decimal
 from solution.repository.base_repository import BaseRepository
 from solution.models.transaction import Transaction
 from solution.models.categories import Category
+from typing import Dict, Optional
 
 
 class ReportService:
@@ -16,19 +17,25 @@ class ReportService:
         self.category_repository = category_repository
 
     def get_monthly_summary(
-        self, month: int, year: int, account_id: int
+        self,
+        month: int,
+        year: int,
+        account_id: Optional[int] = None,
     ) -> dict[str, Decimal]:
 
         total_income = Decimal("0")
         total_expense = Decimal("0")
 
-        for transaction in self.transaction_repository.get_all():
+        transactions = self.transaction_repository.get_all()
+
+        for transaction in transactions:
 
             if not self._is_valid_transaction(transaction, month, year, account_id):
                 continue
 
             if transaction.type == "income":
                 total_income += transaction.amount
+
             elif transaction.type == "expense":
                 total_expense += transaction.amount
 
@@ -42,22 +49,25 @@ class ReportService:
         self,
         month: int,
         year: int,
-        account_id: int,
+        account_id: Optional[int] = None,
     ) -> dict[str, Decimal]:
 
-        result: dict[str, Decimal] = {}
+        result: Dict[str, Decimal] = {}
+
         categories = {
             category.id: category.name
             for category in self.category_repository.get_all()
         }
 
         for transaction in self.transaction_repository.get_all():
+
             if not self._is_valid_transaction(
                 transaction, month, year, account_id, "expense"
             ):
                 continue
 
             category_name = categories.get(transaction.category_id, "Unknown")
+
             result[category_name] = (
                 result.get(category_name, Decimal("0")) + transaction.amount
             )
@@ -69,15 +79,17 @@ class ReportService:
         transaction: Transaction,
         month: int,
         year: int,
-        account_id: int,
-        transaction_type: str | None = None,
+        account_id: Optional[int] = None,
+        transaction_type: Optional[str] = None,
     ) -> bool:
 
         if transaction.date.month != month or transaction.date.year != year:
             return False
-        if account_id and transaction.account_id != account_id:
+
+        if account_id is not None and transaction.account_id != account_id:
             return False
-        if transaction_type and transaction.type != transaction_type:
+
+        if transaction_type is not None and transaction.type != transaction_type:
             return False
 
         return True

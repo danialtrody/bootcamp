@@ -16,7 +16,7 @@ def test_get_dashboard_summary() -> None:
     }
 
     service = DashboardService(mock_net_worth, mock_report_service)
-    result = service.get_dashboard_summary(1)
+    result = service.get_dashboard_summary()
 
     assert result == {
         "net_worth": Decimal("100"),
