@@ -3,15 +3,13 @@ from solution.services.account_service import AccountService
 from solution.services.net_worth_service import NetWorth
 from solution.services.category_service import CategoryService
 from solution.services.transfer_service import TransferService
-from solution.services.report_service import ReportService 
+from solution.services.report_service import ReportService
+from solution.services.dashboard_service import DashboardService
 
 from solution.repository.csv_accessor import CsvFileAccessor
 from solution.repository.base_repository import BaseRepository
 
-from solution.models.account import Account
-from solution.models.transaction import Transaction
-from solution.models.transfer import Transfer
-from solution.models.categories import Category
+from solution.models import Account, Transaction, Transfer, Category
 
 
 # Repositories
@@ -67,6 +65,11 @@ reports_service = ReportService(
     category_repository
 )
 
+dashboard_service = DashboardService(
+    net_worth_service,
+    reports_service
+)
+
 
 def get_account_service() -> AccountService:
     return account_service
@@ -90,3 +93,7 @@ def get_transfer_service() -> TransferService:
 
 def get_report_service() -> TransferService:
     return reports_service
+
+
+def get_dashboard_service() -> DashboardService:
+    return dashboard_service
