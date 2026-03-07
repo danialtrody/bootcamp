@@ -9,7 +9,6 @@ from solution.models.account import Account
 from solution.models.transaction import Transaction
 from solution.models.transfer import Transfer
 
-
 # Repositories
 account_repo = BaseRepository(
     CsvFileAccessor("data/accounts.csv"),
@@ -41,9 +40,9 @@ net_worth_service = NetWorth(
 )
 
 
-
-def get_account_service():
+def get_account_service() -> Account:
     return account_service
 
-def get_net_worth_service():
+
+def get_net_worth_service() -> NetWorth:
     return net_worth_service
