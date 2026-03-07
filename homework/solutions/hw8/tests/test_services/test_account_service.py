@@ -9,7 +9,12 @@ from decimal import Decimal
 
 def test_get_account_success() -> None:
     mock_repository = MagicMock()
-    service = AccountService(mock_repository)
+    mock_transaction_repository = MagicMock()
+    mock_transfer_repository = MagicMock()
+
+    service = AccountService(
+        mock_repository, mock_transaction_repository, mock_transfer_repository
+    )
 
     expected_account = Account(id=1, name="TEST", opening_balance=Decimal("100"))
 
@@ -35,8 +40,15 @@ def test_get_account_success() -> None:
 )
 def test_get_all_accounts(test_data: List[Dict]) -> None:
     mock_repository = MagicMock()
+    mock_transaction_repository = MagicMock()
+    mock_transfer_repository = MagicMock()
+
     mock_repository.get_all.return_value = test_data
-    service = AccountService(mock_repository)
+
+    service = AccountService(
+        mock_repository, mock_transaction_repository, mock_transfer_repository
+    )
+
     result = service.get_all_accounts()
 
     assert result == test_data
@@ -52,8 +64,14 @@ def test_get_all_accounts(test_data: List[Dict]) -> None:
 )
 def test_add_account_succes(test_data: Account) -> None:
     mock_repository = MagicMock()
+    mock_transaction_repository = MagicMock()
+    mock_transfer_repository = MagicMock()
+
     mock_repository.create.return_value = test_data
-    service = AccountService(mock_repository)
+
+    service = AccountService(
+        mock_repository, mock_transaction_repository, mock_transfer_repository
+    )
 
     result = service.add_account(test_data)
 
@@ -73,7 +91,12 @@ def test_add_account_succes(test_data: Account) -> None:
 )
 def test_add_account_fail(test_data: Account, error: str) -> None:
     mock_repository = MagicMock()
-    service = AccountService(mock_repository)
+    mock_transaction_repository = MagicMock()
+    mock_transfer_repository = MagicMock()
+
+    service = AccountService(
+        mock_repository, mock_transaction_repository, mock_transfer_repository
+    )
 
     with pytest.raises(ValueError, match=error):
         service.add_account(test_data)
@@ -90,7 +113,13 @@ def test_add_account_fail(test_data: Account, error: str) -> None:
 )
 def test_update_account_success(data: Account, updated_data: Account) -> None:
     mock_repository = MagicMock()
-    service = AccountService(mock_repository)
+    mock_transaction_repository = MagicMock()
+    mock_transfer_repository = MagicMock()
+
+    service = AccountService(
+        mock_repository, mock_transaction_repository, mock_transfer_repository
+    )
+
     mock_repository.read.return_value = data
     mock_repository.update.return_value = updated_data
 
@@ -102,8 +131,37 @@ def test_update_account_success(data: Account, updated_data: Account) -> None:
 
 def test_delete_account() -> None:
     mock_repository = MagicMock()
-    service = AccountService(mock_repository)
+    mock_transaction_repository = MagicMock()
+    mock_transfer_repository = MagicMock()
+
+    service = AccountService(
+        mock_repository, mock_transaction_repository, mock_transfer_repository
+    )
+
     mock_repository.delete.return_value = None
     service.delete_account(1)
 
     mock_repository.delete.assert_called_once_with(1)
+
+
+def test_get_account_balance() -> None:
+    mock_account_repository = MagicMock()
+    mock_transaction_repository = MagicMock()
+    mock_transfer_repository = MagicMock()
+
+    service = AccountService(
+        mock_account_repository,
+        mock_transaction_repository,
+        mock_transfer_repository,
+    )
+
+    account = Account(id=1, name="TEST", opening_balance=Decimal("100"))
+
+    mock_account_repository.get.return_value = account
+
+    mock_transaction_repository.get_all.return_value = []
+    mock_transfer_repository.get_all.return_value = []
+
+    result = service.get_account_balance(1)
+
+    assert result == Decimal("100")
