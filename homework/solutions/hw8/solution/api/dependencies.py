@@ -40,7 +40,7 @@ net_worth_service = NetWorth(
 )
 
 
-def get_account_service() -> Account:
+def get_account_service() -> AccountService:
     return account_service
 
 
