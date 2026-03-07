@@ -1,14 +1,12 @@
 import pytest
 from unittest.mock import MagicMock, patch
 from solution.services.data_portability_service import DataPortabilityService
-from solution.models.account import Account
-from solution.models.categories import Category
-from solution.models.transaction import Transaction
-from solution.models.transfer import Transfer
+
 
 EXPORT_ZIP_FILE_NAME = "data.zip"
 
-def test_export_success():
+
+def test_export_success() -> None:
     mock_account = MagicMock()
     mock_category = MagicMock()
     mock_transaction = MagicMock()
@@ -29,7 +27,7 @@ def test_export_success():
             assert mock_write.call_count == 4
 
 
-def test_export_missing_file():
+def test_export_missing_file() -> None:
     mock_account_repo = MagicMock()
     mock_category_repo = MagicMock()
     mock_transaction_repo = MagicMock()
@@ -45,8 +43,9 @@ def test_export_missing_file():
     with patch("os.path.exists", return_value=False):
         with pytest.raises(ValueError, match="Missing file"):
             service.export()
-            
-def test_import_zip_not_exists():
+
+
+def test_import_zip_not_exists() -> None:
 
     mock_account = MagicMock()
     mock_category = MagicMock()
@@ -63,8 +62,9 @@ def test_import_zip_not_exists():
     with patch("os.path.exists", return_value=False):
         with pytest.raises(ValueError, match="Zip file does not exist"):
             service.import_from_zip("fake.zip")
-            
-def test_validate_import_files_missing_file():
+
+
+def test_validate_import_files_missing_file() -> None:
 
     service = DataPortabilityService(
         MagicMock(),
