@@ -2,7 +2,7 @@ from solution.services.transaction_service import TransactionService
 from solution.services.account_service import AccountService
 from solution.services.net_worth_service import NetWorth
 from solution.services.category_service import CategoryService
-
+from solution.services.transfer_service import TransferService
 
 from solution.repository.csv_accessor import CsvFileAccessor
 from solution.repository.base_repository import BaseRepository
@@ -56,6 +56,11 @@ transaction_service = TransactionService(
     transaction_repository
 )
 
+transfer_service = TransferService(
+    transfer_repository,
+    account_repository
+)
+
 
 def get_account_service() -> AccountService:
     return account_service
@@ -71,3 +76,7 @@ def get_category_service() -> CategoryService:
 
 def get_transaction_service() -> TransactionService:
     return transaction_service
+
+
+def get_transfer_service() -> TransferService:
+    return transfer_service
