@@ -4,7 +4,7 @@ if __name__ == "__main__":
     run_cli()
 
 # Terminal 1 - Start the API:
-# RUN -> fastapi dev solution/rest_api/budget_planner_api.py
+# RUN -> fastapi dev solution/api/main.py
 
 # Terminal 2 - Start the UI:
 # RUN -> python main.py
