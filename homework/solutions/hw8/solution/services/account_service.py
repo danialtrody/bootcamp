@@ -18,7 +18,7 @@ class AccountService:
         self.transaction_repository = transaction_repository
         self.transfer_repository = transfer_repository
 
-    def get_account(self, account_id: int) -> Account:
+    def get_account(self, account_id) -> Account:
         return self.account_repository.get(account_id)
 
     def get_all_accounts(self) -> List[Account]:

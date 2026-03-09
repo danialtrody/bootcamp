@@ -9,6 +9,9 @@ import datetime
 from enum import Enum
 
 
+ID = "id"
+
+
 class HasId(Protocol):
     id: int
 
@@ -27,6 +30,11 @@ class BaseRepository(Generic[EntityType]):
             raise ValueError("Repository accepts only dataclass entities")
 
         data = self.accessor.read()
+
+        if getattr(item, ID, None) is None:
+            max_id = max([int(row.get(ID, 0)) for row in data], default=0)
+            item.id = max_id + 1
+
         data.append(self._serialize_item(item))
         self.accessor.write(data)
         return item
@@ -34,7 +42,7 @@ class BaseRepository(Generic[EntityType]):
     def get(self, item_id: int) -> EntityType:
         data = self.accessor.read()
         for row in data:
-            if str(row.get("id")) == str(item_id):
+            if str(row.get(ID)) == str(item_id):
                 deserialized = self._deserialize_row(row)
                 return self._model_type(**deserialized)
         modal_name = self._model_type.__name__
