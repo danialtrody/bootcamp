@@ -1,7 +1,7 @@
 from decimal import Decimal, InvalidOperation
 import requests
 from starlette.status import HTTP_200_OK, HTTP_201_CREATED
-from typing import List, Optional, Dict
+from typing import Optional, Dict
 import datetime
 
 API_BASE_URL = "http://localhost:8000"
@@ -42,7 +42,7 @@ def handle_user_choice(choice: str) -> bool:
         "1": print_all_transactions,
         "2": add_income,
         "3": add_expense,
-        "4": delete_transaction
+        "4": delete_transaction,
     }
     action = actions.get(choice)
 
@@ -54,38 +54,40 @@ def handle_user_choice(choice: str) -> bool:
     return False
 
 
-def print_all_transactions():
+def print_all_transactions() -> None:
     params = all_transactions_user_inputs()
     endpoint = f"{API_BASE_URL}/transactions/"
-    
+
     try:
         response = requests.get(endpoint, params=params)
     except requests.exceptions.RequestException:
         print(ERROR_CONNECTION)
-        
-    if response.status_code==HTTP_200_OK:
+
+    if response.status_code == HTTP_200_OK:
         transactions = response.json()
-        if not transactions:
-            print("No transactions found.")
-        else:
-            for transaction in transactions:
-                print(
-                    f"ID {transaction['id']} | "
-                    f"{transaction['date']} | "
-                    f"{transaction['type']} | "
-                    f"Amount: {transaction['amount']} | "
-                    f"Account ID: {transaction['account_id']} | "
-                    f"Category ID: {transaction['category_id']}"
-                    )
+        for transaction in transactions:
+            print(
+                f"ID {transaction['id']} | "
+                f"{transaction['date']} | "
+                f"{transaction['type']} | "
+                f"Amount: {transaction['amount']} | "
+                f"Account ID: {transaction['account_id']} | "
+                f"Category ID: {transaction['category_id']}"
+            )
     else:
-        print(f"{ERROR_SERVER} Status code: {response.status_code}, detail: {response.text}")
+        print(
+            f"{ERROR_SERVER} Status code: {response.status_code}, detail: {response.text}"
+        )
+
 
 def all_transactions_user_inputs() -> Dict:
     account_id_input = input("Enter account id (or leave blank for all): ").strip()
     month_input = input("Enter month number (1-12, optional): ").strip()
     year_input = input("Enter year (optional): ").strip()
 
-    account_id: Optional[int] = int(account_id_input) if account_id_input.isdigit() else None
+    account_id: Optional[int] = (
+        int(account_id_input) if account_id_input.isdigit() else None
+    )
     month: Optional[int] = int(month_input) if month_input.isdigit() else None
     year: Optional[int] = int(year_input) if year_input.isdigit() else None
 
@@ -98,26 +100,27 @@ def all_transactions_user_inputs() -> Dict:
         params["year"] = year
     return params
 
-def add_income():
+
+def add_income() -> None:
     endpoint = f"{API_BASE_URL}/transactions/income"
     amount = get_amount_input()
     date = datetime.date.today()
     account_id = get_account_id_input()
     category_id = get_category_id_input()
-    
+
     data = {
         "amount": str(amount),
         "date": date.isoformat(),
         "type": "income",
         "account_id": account_id,
-        "category_id": category_id
-        }    
+        "category_id": category_id,
+    }
     try:
         response = requests.post(endpoint, json=data)
     except requests.exceptions.RequestException:
         print(ERROR_CONNECTION)
-        
-    if response.status_code==HTTP_201_CREATED:
+
+    if response.status_code == HTTP_201_CREATED:
         transaction = response.json()
         print(
             f"Transaction added successfully:\n"
@@ -130,28 +133,31 @@ def add_income():
         )
 
     else:
-        print(f"{ERROR_SERVER} Status code: {response.status_code}, detail: {response.text}")
-        
-def add_expense():
+        print(
+            f"{ERROR_SERVER} Status code: {response.status_code}, detail: {response.text}"
+        )
+
+
+def add_expense() -> None:
     endpoint = f"{API_BASE_URL}/transactions/expense"
     amount = get_amount_input()
     date = datetime.date.today()
     account_id = get_account_id_input()
     category_id = get_category_id_input()
-    
+
     data = {
         "amount": str(amount),
         "date": date.isoformat(),
         "type": "expense",
         "account_id": account_id,
-        "category_id": category_id
-        }    
+        "category_id": category_id,
+    }
     try:
         response = requests.post(endpoint, json=data)
     except requests.exceptions.RequestException:
         print(ERROR_CONNECTION)
-        
-    if response.status_code==HTTP_201_CREATED:
+
+    if response.status_code == HTTP_201_CREATED:
         transaction = response.json()
         print(
             f"Transaction added successfully:\n"
@@ -164,10 +170,12 @@ def add_expense():
         )
 
     else:
-        print(f"{ERROR_SERVER} Status code: {response.status_code}, detail: {response.text}")
-        
+        print(
+            f"{ERROR_SERVER} Status code: {response.status_code}, detail: {response.text}"
+        )
 
-def delete_transaction():
+
+def delete_transaction() -> None:
     account_id = get_account_id_input()
     endpoint = f"{API_BASE_URL}/transactions/{account_id}"
 
@@ -183,7 +191,6 @@ def delete_transaction():
         print(
             f"{ERROR_SERVER} Status code: {response.status_code}, detail: {response.text}"
         )
-        
 
 
 def get_amount_input() -> Decimal:
@@ -194,6 +201,7 @@ def get_amount_input() -> Decimal:
         except InvalidOperation:
             print("Please enter a valid amount (numbers only).")
 
+
 def get_account_id_input() -> int:
     while True:
         account_id = input("Enter account id: ").strip()
@@ -201,11 +209,10 @@ def get_account_id_input() -> int:
             return int(account_id)
         print("Enter a valid account id.")
 
+
 def get_category_id_input() -> int:
     while True:
         category_id = input("Enter category id: ").strip()
         if category_id.isdigit():
             return int(category_id)
         print("Enter a valid category id.")
-
-
