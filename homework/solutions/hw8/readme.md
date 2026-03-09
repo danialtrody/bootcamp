@@ -5,14 +5,14 @@
 1. **Navigate to the project directory**:
 
 ```bash
-cd /bootcamp/homework/solutions/hw6
+cd /bootcamp/homework/solutions/hw8
 ```
 2. **Run the application**:
 
 ```
 Terminal 1 - Start the API:
 
-RUN -> fastapi dev solution/rest_api/budget_planner_api.py
+RUN -> fastapi dev solution/api/main.py
 
 
 Terminal 2 - Start the UI:
