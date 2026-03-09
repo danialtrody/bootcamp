@@ -30,10 +30,8 @@ class BaseRepository(Generic[EntityType]):
             raise ValueError("Repository accepts only dataclass entities")
 
         data = self.accessor.read()
-
-        if getattr(item, ID, None) is None:
-            max_id = max([int(row.get(ID, 0)) for row in data], default=0)
-            item.id = max_id + 1
+        max_id = max([int(row.get(ID, 0)) for row in data], default=0)
+        item.id = max_id + 1
 
         data.append(self._serialize_item(item))
         self.accessor.write(data)
