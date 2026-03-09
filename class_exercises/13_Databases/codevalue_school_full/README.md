@@ -114,3 +114,44 @@ alembic upgrade head
 Restart the server and test the CRUD endpoints using the Swagger UI at `http://127.0.0.1:8000/docs`.
 
 Insert a student via `POST /students/`, then retrieve, update, and delete it.
+
+#### 3
+
+1. Add to student repository the following methods:
+  - find_by_email(email: str) -> Student
+     stmt = select(Student).where(Student.email == email)
+     return session.scalars(stmt).first()
+
+  - find_by_last_name(last_name: str) -> list[Student]
+    stmt = select(Student).where(Student.last_name == last_name)
+    return session.scalars(stmt).all()
+
+  - find_by_partial_name(partial_name: str) -> list[Student] # LIKE
+    stmt = select(Student).where(Student.first_name.like(f"%{partial_name}%"))
+    return session.scalars(stmt).all()
+
+  - update_email(student: Student, new_email: str)
+    
+    student_to_update = session.get(Student, student.id)
+    student_to_update.email = new_email    
+    session.commit()
+
+  - delete_student(student: Student)
+
+    student_to_delete = session.get(Student, student.id)
+    session.delete(student_to_delete) 
+    session.commit()
+
+
+#### 4 - SQLALCHEMY
+
+1. Fetch all columns for every student and print their first_name.
+2. Find the single student who has the email 'test@example.com'.
+3. Get a list of all students, sorted by their last_name in alphabetical order.
+4. Find all students whose email addresses end with @gmail.com.
+5. Find all students who were born before January 1, 2005.
+6. Fetch only the 5 most recently created students.
+7. Skip the first 10 students and fetch the next 10, ordered by their student_id.
+8. Calculate the total number of students currently in the table.
+9. Find all students whose first_name starts with "J" AND whose birth_date is not null.
+10. Find all students who were born in the month of March, regardless of the year.

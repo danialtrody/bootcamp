@@ -18,3 +18,20 @@ class StudentRepository:
         await session.commit()
         await session.refresh(student)
         return student
+    
+    async def find_by_email(self, session: AsyncSession, email: str) -> Student | None:
+        result = await session.scalars(
+            select(Student)
+            .where(Student.email == email)
+        )
+        return result.first() 
+    
+    async def find_by_last_name(self, session: AsyncSession, last_name: str) -> list[Student]:
+        result = await session.scalars(
+            select(Student)
+            .where(Student.last_name == last_name)
+        )
+        return result.all()
+    
+    async def find_by_partial_name(partial_name: str) -> list[Student]:
+        pass

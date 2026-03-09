@@ -1,4 +1,4 @@
-from typing import Any
+from typing import Any, Dict
 
 from fastapi import APIRouter, Body, HTTPException, status
 
@@ -22,6 +22,26 @@ async def get_student(student_id: int) -> dict[str, Any]:
             status_code=status.HTTP_404_NOT_FOUND, detail="Student not found"
         )
     return student
+
+@router.get("/email/{student_email}")
+async def get_student(student_email: str) -> dict[str, Any]:
+    service = StudentService()
+    student = await service.get_student_by_email(student_email)
+    if student is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Student not found"
+        )
+    return student
+    
+@router.get("/last_name/{last_name}")
+async def get_student(last_name: str) -> list[Dict]:
+    service = StudentService()
+    students = await service.get_students_by_last_name(last_name)
+    if students is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Student not found"
+        )
+    return students
 
 
 @router.post("/", status_code=status.HTTP_201_CREATED)

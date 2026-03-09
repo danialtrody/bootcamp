@@ -43,3 +43,22 @@ class StudentService:
                 birth_date=student_data.get("birth_date"),
             )
             return _student_to_dict(await self.repository.create(session, student))
+
+    async def get_student_by_email(self, email: str) -> Student:
+        async with async_session_maker() as session:
+            student = await self.repository.find_by_email(session, email)
+            if student is None:
+                return None
+            return _student_to_dict(student)
+
+    async def get_students_by_last_name(self, last_name: str) -> dict[str, Any]:
+        async with async_session_maker() as session:
+            students = await self.repository.find_by_last_name(session, last_name)
+            if students is None:
+                return None
+            result = []
+            
+            for student in students:
+                result.append(_student_to_dict(student))
+            
+            return result 

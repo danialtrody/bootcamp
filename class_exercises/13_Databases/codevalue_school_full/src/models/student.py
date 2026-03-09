@@ -18,3 +18,12 @@ class Student(Base):
     email: Mapped[str] = mapped_column(String(MAX_EMAIL_LENGTH), nullable=False, unique=True)
     birth_date: Mapped[datetime.date] = mapped_column(Date, nullable=True)
     created_at: Mapped[datetime.datetime] = mapped_column(DateTime, server_default=func.now())
+
+    def __repr__(self) -> str:
+        return (
+            f"<Student(id={self.student_id}, "
+            f"name={self.first_name} {self.last_name}, "
+            f"email={self.email}, "
+            f"birth_date={self.birth_date}, "
+            f"created_at={self.created_at})>"
+        )
