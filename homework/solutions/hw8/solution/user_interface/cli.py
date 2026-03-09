@@ -1,4 +1,6 @@
 from solution.user_interface import account_cli
+from solution.user_interface import transaction_cli
+
 
 API_BASE_URL = "http://localhost:8000"
 ERROR_SERVER = "Server returned an error."
@@ -46,6 +48,7 @@ def handle_user_choice(choice: str) -> bool:
 
     actions = {
         "1": account_cli.run_account_cli,
+        "2": transaction_cli.run_transaction_cli
     }
 
     action = actions.get(choice)
