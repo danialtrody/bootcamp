@@ -1,10 +1,10 @@
-from typing import Optional
 from dataclasses import dataclass
 from decimal import Decimal
+from solution.repository.base_repository import HasId
 
 
 @dataclass
-class Account:
-    id: Optional[int] = None
+class Account(HasId):
+    id: int = 0
     name: str = ""
     opening_balance: Decimal = Decimal("0")
