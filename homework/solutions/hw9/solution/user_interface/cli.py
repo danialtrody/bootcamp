@@ -1,0 +1,69 @@
+from solution.user_interface import (
+    account_cli,
+    transaction_cli,
+    category_cli,
+    transfer_cli,
+    report_cli,
+    other_cli
+)
+
+
+API_BASE_URL = "http://localhost:8000"
+ERROR_SERVER = "Server returned an error."
+ERROR_CONNECTION = "Cannot connect to the server. Make sure the API is running."
+
+
+def run_cli() -> None:
+    """Start the CLI loop for the budget planner."""
+
+    while True:
+        user_choice = main_menu()
+        if handle_user_choice(user_choice):
+            break
+
+
+def main_menu() -> str:
+    menu_lines = [
+        "\n|==================================|",
+        "|        Budget Planner CLI        |",
+        "|==================================|",
+        "|Available Sections:               |",
+        "|                                  |",
+        "|1. ACCOUNTS - Manage              |",
+        "|2. TRANSACTIONS - Income/Expense  |",
+        "|3. CATEGORIES - Types             |",
+        "|4. TRANSFER - Move Money          |",
+        "|5. REPORTS - Reports              |",
+        "|6. OTHER                          |",
+        "|7. EXIT                           |",
+        "|==================================|",
+    ]
+    for line in menu_lines:
+        print(line)
+    return input("\nChoose an option (1-7): ").strip()
+
+
+def handle_user_choice(choice: str) -> bool:
+    """Handle the user's menu choice. Returns True if should exit."""
+
+    if choice == "7":
+        print("Good Bye :)")
+        return True
+
+    actions = {
+        "1": account_cli.run_account_cli,
+        "2": transaction_cli.run_transaction_cli,
+        "3": category_cli.run_category_cli,
+        "4": transfer_cli.run_transfer_cli,
+        "5": report_cli.run_report_cli,
+        "6": other_cli.run_other_cli
+    }
+
+    action = actions.get(choice)
+
+    if action is None:
+        print("\nEnter a valid number between 1 and 7.")
+        return False
+
+    action()
+    return False
