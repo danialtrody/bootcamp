@@ -69,7 +69,11 @@ def print_account_balance() -> None:
         if accounts:
             print("\nAccounts Balance:")
             for account in accounts:
-                print(f"- {account['name']}: {account['balance']}")
+                print(
+                    f"- ID: {account["id"]} |",
+                    f"Name: {account['name']} |",
+                    f"Balance: {account['balance']}"
+                )
         else:
             print("No accounts found.")
     else:
