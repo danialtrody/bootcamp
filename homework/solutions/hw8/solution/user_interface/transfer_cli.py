@@ -85,7 +85,6 @@ def add_transfer() -> None:
     endpoint = f"{API_BASE_URL}/transfer"
 
     data = {
-        "id": get_id_input(""),
         "amount": str(get_amount_input()),
         "date": datetime.date.today().isoformat(),
         "description": get_description_input(),
@@ -102,6 +101,7 @@ def add_transfer() -> None:
     if response.status_code == HTTP_201_CREATED:
         transfer = response.json()
         if transfer:
+            print("Transfer completed successfully:")
             print(
                 f"- ID: {transfer["id"]} |",
                 f"Amount: {transfer['amount']} |",
