@@ -59,7 +59,9 @@ category_service = CategoryService(
 )
 
 transaction_service = TransactionService(
-    transaction_repository
+    transaction_repository,
+    account_repository,
+    category_repository
 )
 
 transfer_service = TransferService(

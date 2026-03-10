@@ -1,8 +1,8 @@
 from decimal import Decimal, InvalidOperation
 import requests
 from starlette.status import HTTP_200_OK, HTTP_201_CREATED
-from typing import Optional, Dict
 import datetime
+
 
 API_BASE_URL = "http://localhost:8000"
 ERROR_SERVER = "Server returned an error."
@@ -47,7 +47,7 @@ def handle_user_choice(choice: str) -> bool:
     action = actions.get(choice)
 
     if action is None:
-        print("\nEnter a valid number between 1 and 6.")
+        print("\nEnter a valid number between 1 and 5.")
         return False
 
     action()
@@ -55,7 +55,11 @@ def handle_user_choice(choice: str) -> bool:
 
 
 def print_all_transactions() -> None:
-    params = all_transactions_user_inputs()
+    params = {
+        "account_id": get_account_id_all_transactions_input(),
+        "month": get_date_input("Enter month number (1-12): "),
+        "year": get_date_input("Enter year: "),
+    }
     endpoint = f"{API_BASE_URL}/transactions/"
 
     try:
@@ -78,27 +82,6 @@ def print_all_transactions() -> None:
         print(
             f"{ERROR_SERVER} Status code: {response.status_code}, detail: {response.text}"
         )
-
-
-def all_transactions_user_inputs() -> Dict:
-    account_id_input = input("Enter account id (or leave blank for all): ").strip()
-    month_input = input("Enter month number (1-12, optional): ").strip()
-    year_input = input("Enter year (optional): ").strip()
-
-    account_id: Optional[int] = (
-        int(account_id_input) if account_id_input.isdigit() else None
-    )
-    month: Optional[int] = int(month_input) if month_input.isdigit() else None
-    year: Optional[int] = int(year_input) if year_input.isdigit() else None
-
-    params = {}
-    if account_id is not None:
-        params["account_id"] = account_id
-    if month is not None:
-        params["month"] = month
-    if year is not None:
-        params["year"] = year
-    return params
 
 
 def add_income() -> None:
@@ -216,3 +199,19 @@ def get_category_id_input() -> int:
         if category_id.isdigit():
             return int(category_id)
         print("Enter a valid category id.")
+
+
+def get_account_id_all_transactions_input() -> int | None:
+    while True:
+        account_id_input = input("Enter account id (or leave blank for all): ")
+        if account_id_input.isdigit() or account_id_input == "":
+            return int(account_id_input) if account_id_input.isdigit() else None
+
+
+def get_date_input(year_or_month: str) -> int | None:
+    while True:
+        date = input(year_or_month).strip()
+        if date.isdigit():
+            return int(date)
+        elif date == "":
+            return None
