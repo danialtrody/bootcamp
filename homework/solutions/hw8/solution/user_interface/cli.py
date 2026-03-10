@@ -3,7 +3,8 @@ from solution.user_interface import (
     transaction_cli,
     category_cli,
     transfer_cli,
-    report_cli
+    report_cli,
+    other_cli
 )
 
 
@@ -33,21 +34,19 @@ def main_menu() -> str:
         "|3. CATEGORIES - Types             |",
         "|4. TRANSFER - Move Money          |",
         "|5. REPORTS - Reports              |",
-        "|6. DASHBOARD - Summary            |",
-        "|7. NET WORTH - Total              |",
-        "|8. PORTABILITY - Import/Export    |",
-        "|9. EXIT                           |",
+        "|6. OTHER                          |",
+        "|7. EXIT                           |",
         "|==================================|",
     ]
     for line in menu_lines:
         print(line)
-    return input("\nChoose an option (1-9): ").strip()
+    return input("\nChoose an option (1-7): ").strip()
 
 
 def handle_user_choice(choice: str) -> bool:
     """Handle the user's menu choice. Returns True if should exit."""
 
-    if choice == "9":
+    if choice == "7":
         print("Good Bye :)")
         return True
 
@@ -56,7 +55,8 @@ def handle_user_choice(choice: str) -> bool:
         "2": transaction_cli.run_transaction_cli,
         "3": category_cli.run_category_cli,
         "4": transfer_cli.run_transfer_cli,
-        "5": report_cli.run_report_cli
+        "5": report_cli.run_report_cli,
+        "6": other_cli.run_other_cli
     }
 
     action = actions.get(choice)
