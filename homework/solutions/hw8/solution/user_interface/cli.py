@@ -2,7 +2,8 @@ from solution.user_interface import (
     account_cli,
     transaction_cli,
     category_cli,
-    transfer_cli
+    transfer_cli,
+    report_cli
 )
 
 
@@ -54,7 +55,8 @@ def handle_user_choice(choice: str) -> bool:
         "1": account_cli.run_account_cli,
         "2": transaction_cli.run_transaction_cli,
         "3": category_cli.run_category_cli,
-        "4": transfer_cli.run_transfer_cli
+        "4": transfer_cli.run_transfer_cli,
+        "5": report_cli.run_report_cli
     }
 
     action = actions.get(choice)
