@@ -19,6 +19,7 @@
 - Run `flake8` from the root of your exercise directory.
 
 
+
 ---
 
 ## Exercise: Budget Planner — SQLAlchemy & MySQL Persistence
