@@ -62,7 +62,7 @@ def handle_user_choice(choice: str) -> bool:
     action = actions.get(choice)
 
     if action is None:
-        print("\nEnter a valid number between 1 and 9.")
+        print("\nEnter a valid number between 1 and 7.")
         return False
 
     action()
