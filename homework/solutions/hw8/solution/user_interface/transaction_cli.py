@@ -67,9 +67,9 @@ def print_all_transactions() -> None:
         transactions = response.json()
         for transaction in transactions:
             print(
-                f"ID {transaction['id']} | "
-                f"{transaction['date']} | "
-                f"{transaction['type']} | "
+                f"- ID: {transaction['id']} | "
+                f"Date: {transaction['date']} | "
+                f"Type: {transaction['type']} | "
                 f"Amount: {transaction['amount']} | "
                 f"Account ID: {transaction['account_id']} | "
                 f"Category ID: {transaction['category_id']}"
