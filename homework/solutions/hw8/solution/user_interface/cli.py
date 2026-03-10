@@ -1,6 +1,9 @@
-from solution.user_interface import account_cli
-from solution.user_interface import transaction_cli
-from solution.user_interface import category_cli
+from solution.user_interface import (
+    account_cli,
+    transaction_cli,
+    category_cli,
+    transfer_cli
+)
 
 
 API_BASE_URL = "http://localhost:8000"
@@ -50,7 +53,8 @@ def handle_user_choice(choice: str) -> bool:
     actions = {
         "1": account_cli.run_account_cli,
         "2": transaction_cli.run_transaction_cli,
-        "3": category_cli.run_category_cli
+        "3": category_cli.run_category_cli,
+        "4": transfer_cli.run_transfer_cli
     }
 
     action = actions.get(choice)
