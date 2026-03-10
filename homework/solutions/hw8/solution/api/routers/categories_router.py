@@ -41,4 +41,4 @@ def delete_category(
     except ValueError as error:
         raise HTTPException(status_code=HTTP_400_BAD_REQUEST, detail=str(error))
 
-    return {"message": "Account deleted"}
+    return {"message": "Category deleted"}

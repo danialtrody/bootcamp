@@ -1,5 +1,6 @@
 from enum import Enum
 from dataclasses import dataclass
+from solution.repository.base_repository import HasId
 
 
 class CategoryType(Enum):
@@ -8,7 +9,7 @@ class CategoryType(Enum):
 
 
 @dataclass
-class Category:
-    id: int
+class Category(HasId):
     name: str
     type: CategoryType
+    id: int = 0
