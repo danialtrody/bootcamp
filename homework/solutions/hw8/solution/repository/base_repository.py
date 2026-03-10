@@ -73,6 +73,10 @@ class BaseRepository(Generic[EntityType]):
         modal_name = self._model_type.__name__
         raise ValueError(f"{modal_name}: Entity with ID={item_id} was not found")
 
+    def exists(self, item_id: int) -> bool:
+        data = self.accessor.read()
+        return any(str(row.get(ID)) == str(item_id) for row in data)
+
     def _serialize_item(self, item: EntityType) -> Dict[str, Any]:
         result: Dict[str, Any] = {}
 
