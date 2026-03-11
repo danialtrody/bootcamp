@@ -30,12 +30,10 @@ class Account(Base):
     )
 
     outgoing_transfers: Mapped[list["Transfer"]] = relationship(
-    "Transfer",
-    foreign_keys="[Transfer.from_account_id]",
-    back_populates="from_account"
+        "Transfer",
+        foreign_keys="[Transfer.from_account_id]",
+        back_populates="from_account",
     )
     incoming_transfers: Mapped[list["Transfer"]] = relationship(
-        "Transfer",
-        foreign_keys="[Transfer.to_account_id]",
-        back_populates="to_account"
+        "Transfer", foreign_keys="[Transfer.to_account_id]", back_populates="to_account"
     )
