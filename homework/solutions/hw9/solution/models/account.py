@@ -2,8 +2,12 @@ from decimal import Decimal
 from solution.database import Base
 from sqlalchemy import DECIMAL, Integer, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from solution.models.transaction import Transaction
-from solution.models.transfer import Transfer
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from solution.models.transaction import Transaction
+    from solution.models.transfer import Transfer
+
 
 MAX_ACCOUNT_NAME_LENGTH = 255
 
@@ -26,10 +30,12 @@ class Account(Base):
     )
 
     outgoing_transfers: Mapped[list["Transfer"]] = relationship(
-        "Transfer",
-        foreign_keys="[Transfer.from_account_id]",
-        back_populates="from_account",
+    "Transfer",
+    foreign_keys="[Transfer.from_account_id]",
+    back_populates="from_account"
     )
     incoming_transfers: Mapped[list["Transfer"]] = relationship(
-        "Transfer", foreign_keys="[Transfer.to_account_id]", back_populates="to_account"
+        "Transfer",
+        foreign_keys="[Transfer.to_account_id]",
+        back_populates="to_account"
     )

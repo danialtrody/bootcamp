@@ -3,7 +3,11 @@ from decimal import Decimal
 from solution.database import Base
 from sqlalchemy import DECIMAL, Integer, String, ForeignKey, DateTime, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from solution.models.account import Account
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from solution.models.account import Account
+
 
 MAX_TRANSFER_DESCRIPTION_LENGTH = 255
 

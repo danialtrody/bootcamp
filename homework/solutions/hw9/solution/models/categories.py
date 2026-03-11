@@ -2,7 +2,11 @@ from enum import Enum
 from solution.database import Base
 from sqlalchemy import Integer, String, Enum as SQLEnum
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from solution.models.transaction import Transaction
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from solution.models.transaction import Transaction
+
 
 MAX_CATEGORY_NAME_LENGTH = 100
 
