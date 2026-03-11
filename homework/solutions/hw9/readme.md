@@ -5,7 +5,7 @@
 1. **Navigate to the project directory**:
 
 ```bash
-cd /bootcamp/homework/solutions/hw8
+cd /bootcamp/homework/solutions/hw9
 ```
 2. **Run the application**:
 
