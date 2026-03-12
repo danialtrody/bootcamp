@@ -11,6 +11,7 @@ from solution.models.categories import Category, CategoryType
 from solution.models.transfer import Transfer 
 from solution.models.account import Account 
 from solution.models.transaction import Transaction 
+from sqlalchemy.engine import Connection
 
 
 
@@ -60,7 +61,7 @@ def run_migrations_offline() -> None:
         context.run_migrations()
 
 
-def do_run_migrations(connection):
+def do_run_migrations(connection: Connection) -> None:
     context.configure(connection=connection, target_metadata=target_metadata)
 
     with context.begin_transaction():
