@@ -15,10 +15,10 @@ MAX_ACCOUNT_NAME_LENGTH = 255
 class Account(Base):
     __tablename__ = "accounts"
 
-    account_id: Mapped[int] = mapped_column(
+    id: Mapped[int] = mapped_column(
         Integer, primary_key=True, autoincrement=True
     )
-    account_name: Mapped[str] = mapped_column(
+    name: Mapped[str] = mapped_column(
         String(MAX_ACCOUNT_NAME_LENGTH), nullable=False
     )
     opening_balance: Mapped[Decimal] = mapped_column(

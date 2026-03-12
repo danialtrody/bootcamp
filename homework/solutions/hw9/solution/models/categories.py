@@ -19,13 +19,13 @@ class CategoryType(str, Enum):
 class Category(Base):
     __tablename__ = "categories"
 
-    category_id: Mapped[int] = mapped_column(
+    id: Mapped[int] = mapped_column(
         Integer, primary_key=True, autoincrement=True
     )
-    category_name: Mapped[str] = mapped_column(
+    name: Mapped[str] = mapped_column(
         String(MAX_CATEGORY_NAME_LENGTH), nullable=False
     )
-    category_type: Mapped[CategoryType] = mapped_column(
+    type: Mapped[CategoryType] = mapped_column(
         SQLEnum(CategoryType), nullable=False
     )
 
