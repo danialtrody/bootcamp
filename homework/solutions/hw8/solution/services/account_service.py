@@ -2,8 +2,8 @@ from solution.repository.base_repository import BaseRepository
 from solution.models.account import Account
 from solution.models.transaction import Transaction
 from solution.models.transfer import Transfer
-from typing import List
 from decimal import Decimal
+from typing import List, Dict, Any
 
 
 class AccountService:
@@ -18,13 +18,15 @@ class AccountService:
         self.transaction_repository = transaction_repository
         self.transfer_repository = transfer_repository
 
-    def get_account(self, account_id: int) -> Account:
-        return self.account_repository.get(account_id)
+    async def get_account(self, account_id: int) -> dict[Any, Any]:
+        account = self.account_repository.get(account_id)
+        return account.to_dict()
 
-    def get_all_accounts(self) -> List[Account]:
-        return self.account_repository.get_all()
+    async def get_all_accounts(self) -> List[dict[Any, Any]]:
+        accounts = self.account_repository.get_all()
+        return [account.to_dict() for account in accounts]
 
-    def get_account_balance(self, account_id: int) -> Decimal:
+    async def get_account_balance(self, account_id: int) -> Decimal:
         account = self.account_repository.get(account_id)
 
         balance = account.opening_balance
@@ -46,12 +48,20 @@ class AccountService:
 
         return balance
 
-    def add_account(self, account: Account) -> Account:
+    async def add_account(self, account_data: Dict[str, Any]) -> Dict[str, Any]:
+
+        account = Account(
+            name=account_data["name"], opening_balance=account_data["opening_balance"]
+        )
+
         self._validate_account(account)
         self._check_existing_accounts(account)
-        return self.account_repository.create(account)
+        created = self.account_repository.create(account)
+        return created.to_dict()
 
-    def update_account_name(self, account_id: int, updated_name: str) -> Account:
+    async def update_account_name(
+        self, account_id: int, updated_name: str
+    ) -> Dict[str, Any]:
         account = self.account_repository.get(account_id)
 
         new_account = Account(
@@ -63,9 +73,10 @@ class AccountService:
         self._validate_account(new_account)
         self._check_existing_accounts(new_account)
 
-        return self.account_repository.update(new_account)
+        updated = self.account_repository.update(new_account)
+        return updated.to_dict()
 
-    def delete_account(self, account_id: int) -> None:
+    async def delete_account(self, account_id: int) -> None:
         self.account_repository.delete(account_id)
 
     def _validate_account(self, account: Account) -> None:

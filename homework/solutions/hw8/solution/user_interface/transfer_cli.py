@@ -88,8 +88,8 @@ def add_transfer() -> None:
         "amount": str(get_amount_input()),
         "date": datetime.date.today().isoformat(),
         "description": get_description_input(),
-        "from_account_id": get_id_input("from"),
-        "to_account_id": get_id_input("to"),
+        "from_account_id": get_id_input("from account"),
+        "to_account_id": get_id_input("to account"),
     }
 
     try:
@@ -119,7 +119,7 @@ def add_transfer() -> None:
 
 
 def delete_transfer() -> None:
-    transfer_id = get_id_input("")
+    transfer_id = get_id_input("transfer")
     endpoint = f"{API_BASE_URL}/transfer/{transfer_id}"
 
     try:
@@ -155,7 +155,7 @@ def get_amount_input() -> Decimal:
 
 def get_id_input(source_destenation_account: str) -> int:
     while True:
-        account_id = input(f"Enter {source_destenation_account} account id: ").strip()
+        account_id = input(f"Enter {source_destenation_account} id: ").strip()
         if account_id.isdigit():
             return int(account_id)
         print("Enter a valid account id.")

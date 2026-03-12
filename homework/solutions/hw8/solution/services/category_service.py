@@ -1,6 +1,6 @@
 from solution.repository.base_repository import BaseRepository
-from solution.models.categories import Category, CategoryType
-from typing import List
+from solution.models.categories import Category
+from typing import List, Any, Dict
 
 
 class CategoryService:
@@ -8,23 +8,28 @@ class CategoryService:
     def __init__(self, category_repository: BaseRepository[Category]):
         self.category_repository = category_repository
 
-    def get_all_categories(self) -> List[Category]:
-        return self.category_repository.get_all()
+    async def get_all_categories(self) -> List[dict[Any, Any]]:
+        categories = self.category_repository.get_all()
+        return [category.to_dict() for category in categories]
 
-    def add_category(self, category: Category) -> Category:
+    async def add_category(self, category_data: Dict[str, Any]) -> Dict[str, Any]:
+
+        category = Category(
+            name=category_data["name"],
+            type=category_data["type"]
+        )
 
         if category is None:
             raise ValueError("Category cannot be None")
         if not category.name or not category.name.strip():
             raise ValueError("Category name cannot be empty")
-        if not isinstance(category.type, CategoryType):
-            raise ValueError("Invalid category type")
 
         self._check_if_exists(category)
 
-        return self.category_repository.create(category)
+        create = self.category_repository.create(category)
+        return create.to_dict()
 
-    def delete_category(self, category_id: int) -> None:
+    async def delete_category(self, category_id: int) -> None:
         self.category_repository.delete(category_id)
 
     def _check_if_exists(self, category: Category) -> None:

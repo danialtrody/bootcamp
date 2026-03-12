@@ -13,3 +13,10 @@ class Category(HasId):
     name: str
     type: CategoryType
     id: int = 0
+
+    def to_dict(self) -> dict:
+        return {
+            "id": self.id,
+            "name": self.name,
+            "type": self.type.value
+        }

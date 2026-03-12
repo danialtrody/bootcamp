@@ -88,7 +88,7 @@ def add_income() -> None:
     endpoint = f"{API_BASE_URL}/transactions/income"
     amount = get_amount_input()
     date = datetime.date.today()
-    account_id = get_account_id_input()
+    account_id = get_account_id_input("account")
     category_id = get_category_id_input()
 
     data = {
@@ -125,7 +125,7 @@ def add_expense() -> None:
     endpoint = f"{API_BASE_URL}/transactions/expense"
     amount = get_amount_input()
     date = datetime.date.today()
-    account_id = get_account_id_input()
+    account_id = get_account_id_input("account")
     category_id = get_category_id_input()
 
     data = {
@@ -159,7 +159,7 @@ def add_expense() -> None:
 
 
 def delete_transaction() -> None:
-    account_id = get_account_id_input()
+    account_id = get_account_id_input("transaction")
     endpoint = f"{API_BASE_URL}/transactions/{account_id}"
 
     try:
@@ -185,9 +185,9 @@ def get_amount_input() -> Decimal:
             print("Please enter a valid amount (numbers only).")
 
 
-def get_account_id_input() -> int:
+def get_account_id_input(account_or_transaction: str) -> int:
     while True:
-        account_id = input("Enter account id: ").strip()
+        account_id = input(f"Enter {account_or_transaction} id: ").strip()
         if account_id.isdigit():
             return int(account_id)
         print("Enter a valid account id.")
