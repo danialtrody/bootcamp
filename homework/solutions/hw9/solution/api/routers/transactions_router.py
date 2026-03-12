@@ -25,7 +25,8 @@ async def get_all_transactions(
 
 @router.post("/income", status_code=HTTP_201_CREATED, response_model=None)
 async def add_income(
-    transaction_data: Dict[str, Any], service: TransactionService = account_service_dependency
+    transaction_data: Dict[str, Any],
+    service: TransactionService = account_service_dependency,
 ) -> Dict[str, Any]:
     try:
         return await service.add_income(transaction_data)
@@ -35,8 +36,9 @@ async def add_income(
 
 @router.post("/expense", status_code=HTTP_201_CREATED, response_model=None)
 async def add_expense(
-    transaction_data:  Dict[str, Any], service: TransactionService = account_service_dependency
-) ->  Dict[str, Any]:
+    transaction_data: Dict[str, Any],
+    service: TransactionService = account_service_dependency,
+) -> Dict[str, Any]:
     try:
         return await service.add_expense(transaction_data)
     except ValueError as error:

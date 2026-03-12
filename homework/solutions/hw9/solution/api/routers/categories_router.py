@@ -21,7 +21,8 @@ async def get_all_categories(
 
 @router.post("/", status_code=HTTP_201_CREATED, response_model=None)
 async def add_category(
-    category_data: Dict[str, Any], service: CategoryService = category_service_dependency
+    category_data: Dict[str, Any],
+    service: CategoryService = category_service_dependency,
 ) -> Dict[str, Any]:
 
     try:

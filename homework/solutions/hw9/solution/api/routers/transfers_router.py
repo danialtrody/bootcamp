@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from solution.services.transfer_service import TransferService
 from solution.api.dependencies import get_transfer_service
-from typing import List, Optional, Dict, Any
+from typing import List, Dict, Any
 from starlette.status import (
     HTTP_400_BAD_REQUEST,
     HTTP_201_CREATED,
@@ -25,7 +25,8 @@ async def get_all_transfers(
 
 @router.post("/", status_code=HTTP_201_CREATED, response_model=None)
 async def add_transfer(
-    transfer_data: Dict[str, Any], service: TransferService = transfer_service_dependency
+    transfer_data: Dict[str, Any],
+    service: TransferService = transfer_service_dependency,
 ) -> Dict[str, Any]:
 
     try:

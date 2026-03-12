@@ -10,7 +10,6 @@ from solution.services.dashboard_service import DashboardService
 from solution.services.data_portability_service import DataPortabilityService
 
 
-from solution.repository.csv_accessor import CsvFileAccessor
 from solution.repository.base_repository import BaseRepository
 
 from solution.models.account import Account
@@ -18,27 +17,10 @@ from solution.models.transaction import Transaction
 from solution.models.transfer import Transfer
 from solution.models.categories import Category
 
-
-# Repositories
-account_repository = BaseRepository(
-    CsvFileAccessor("data/accounts.csv"),
-    Account,
-)
-
-transaction_repository = BaseRepository(
-    CsvFileAccessor("data/transactions.csv"),
-    Transaction,
-)
-
-transfer_repository = BaseRepository(
-    CsvFileAccessor("data/transfers.csv"),
-    Transfer,
-)
-
-category_repository = BaseRepository(
-    CsvFileAccessor("data/categories.csv"),
-    Category,
-)
+account_repository = BaseRepository(Account)
+transaction_repository = BaseRepository(Transaction)
+transfer_repository = BaseRepository(Transfer)
+category_repository = BaseRepository(Category)
 
 
 # Service
@@ -54,38 +36,21 @@ net_worth_service = NetWorth(
     transfer_repository,
 )
 
-category_service = CategoryService(
-    category_repository
-)
+category_service = CategoryService(category_repository)
 
 transaction_service = TransactionService(
-    transaction_repository,
-    account_repository,
-    category_repository
+    transaction_repository, account_repository, category_repository
 )
 
-transfer_service = TransferService(
-    transfer_repository,
-    account_repository
-)
+transfer_service = TransferService(transfer_repository, account_repository)
 
-reports_service = ReportService(
-    transaction_repository,
-    category_repository
-)
+reports_service = ReportService(transaction_repository, category_repository)
 
-dashboard_service = DashboardService(
-    net_worth_service,
-    reports_service
-)
+dashboard_service = DashboardService(net_worth_service, reports_service)
 
 portability_service = DataPortabilityService(
-    account_repository,
-    category_repository,
-    transaction_repository,
-    transfer_repository
+    account_repository, category_repository, transaction_repository, transfer_repository
 )
-
 
 
 def get_account_service() -> AccountService:
@@ -114,6 +79,7 @@ def get_report_service() -> ReportService:
 
 def get_dashboard_service() -> DashboardService:
     return dashboard_service
+
 
 def get_portability_service() -> DataPortabilityService:
     return portability_service

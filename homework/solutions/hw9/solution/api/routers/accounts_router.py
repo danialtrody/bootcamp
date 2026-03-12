@@ -1,3 +1,4 @@
+import asyncio
 from fastapi import APIRouter, Depends, HTTPException
 from typing import List, Dict, Any
 from solution.services.account_service import AccountService
@@ -8,7 +9,6 @@ from starlette.status import (
     HTTP_400_BAD_REQUEST,
     HTTP_404_NOT_FOUND,
 )
-
 
 ACCOUNT_ID = "id"
 ACCOUNT_NAME = "name"
@@ -24,9 +24,11 @@ async def get_all_accounts(
     service: AccountService = account_service_dependency,
 ) -> List[Dict[str, Any]]:
     accounts = await service.get_all_accounts()
+    balances = await asyncio.gather(
+        *[service.get_account_balance(account["id"]) for account in accounts]
+    )
     result = []
-    for account in accounts:
-        balance = await service.get_account_balance(account["id"])
+    for account, balance in zip(accounts, balances):
         result.append(
             {
                 ACCOUNT_ID: account[ACCOUNT_ID],

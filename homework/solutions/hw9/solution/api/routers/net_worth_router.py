@@ -9,7 +9,9 @@ net_worth_service_dependency: NetWorth = Depends(get_net_worth_service)
 
 
 @router.get("/", status_code=HTTP_200_OK)
-def get_all_account_net_worth(service: NetWorth = net_worth_service_dependency) -> Decimal:
+def get_all_account_net_worth(
+    service: NetWorth = net_worth_service_dependency,
+) -> Decimal:
 
     try:
         return service.calculate_net_worth()
