@@ -16,7 +16,7 @@ class ReportService:
         self.transaction_repository = transaction_repository
         self.category_repository = category_repository
 
-    def get_monthly_summary(
+    async def get_monthly_summary(
         self,
         month: int,
         year: int,
@@ -45,7 +45,7 @@ class ReportService:
             "net_cash_flow": total_income - total_expense,
         }
 
-    def get_spending_breakdown_by_category(
+    async def get_spending_breakdown_by_category(
         self,
         month: int,
         year: int,

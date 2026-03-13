@@ -17,7 +17,7 @@ class NetWorth:
         self.transaction_repository = transaction_repository
         self.transfer_repository = transfer_repository
 
-    def calculate_net_worth(self) -> Decimal:
+    async def calculate_net_worth(self) -> Decimal:
 
         net_worth = Decimal("0")
 

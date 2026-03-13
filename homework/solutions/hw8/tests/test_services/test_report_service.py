@@ -2,12 +2,13 @@ from unittest.mock import MagicMock
 from solution.services.report_service import ReportService
 from solution.models.transaction import Transaction
 from solution.models.categories import Category, CategoryType
-
+import pytest
 import datetime
 from decimal import Decimal
 
 
-def test_get_monthly_summary_single_account() -> None:
+@pytest.mark.asyncio
+async def test_get_monthly_summary_single_account() -> None:
     mock_transaction = MagicMock()
     mock_category = MagicMock()
 
@@ -23,7 +24,7 @@ def test_get_monthly_summary_single_account() -> None:
     ]
 
     service = ReportService(mock_transaction, mock_category)
-    result = service.get_monthly_summary(1, 2026, 1)
+    result = await service.get_monthly_summary(1, 2026, 1)
 
     expected = {
         "total_income": Decimal("50"),
@@ -34,7 +35,8 @@ def test_get_monthly_summary_single_account() -> None:
     assert result == expected
 
 
-def test_get_monthly_summary_multiple_accounts() -> None:
+@pytest.mark.asyncio
+async def test_get_monthly_summary_multiple_accounts() -> None:
     mock_transaction = MagicMock()
     mock_category = MagicMock()
 
@@ -66,7 +68,7 @@ def test_get_monthly_summary_multiple_accounts() -> None:
     ]
 
     service = ReportService(mock_transaction, mock_category)
-    result = service.get_monthly_summary(1, 2026, 1)
+    result = await service.get_monthly_summary(1, 2026, 1)
 
     expected = {
         "total_income": Decimal("80"),
@@ -77,12 +79,13 @@ def test_get_monthly_summary_multiple_accounts() -> None:
     assert result == expected
 
 
-def test_get_monthly_summary_zero_accounts() -> None:
+@pytest.mark.asyncio
+async def test_get_monthly_summary_zero_accounts() -> None:
     mock_transaction = MagicMock()
     mock_category = MagicMock()
     mock_transaction.get_all.return_value = []
     service = ReportService(mock_transaction, mock_category)
-    result = service.get_monthly_summary(1, 2026, 1)
+    result = await service.get_monthly_summary(1, 2026, 1)
 
     expected = {
         "total_income": Decimal("0"),
@@ -93,7 +96,8 @@ def test_get_monthly_summary_zero_accounts() -> None:
     assert result == expected
 
 
-def test_get_spending_breakdown_by_category() -> None:
+@pytest.mark.asyncio
+async def test_get_spending_breakdown_by_category() -> None:
     mock_transaction = MagicMock()
     mock_category = MagicMock()
 
@@ -131,6 +135,6 @@ def test_get_spending_breakdown_by_category() -> None:
     ]
 
     service = ReportService(mock_transaction, mock_category)
-    result = service.get_spending_breakdown_by_category(1, 2026, 1)
+    result = await service.get_spending_breakdown_by_category(1, 2026, 1)
 
     assert result == {"TEST1": Decimal("50"), "TEST2": Decimal("120")}

@@ -14,7 +14,7 @@ reports_service_dependency: ReportService = Depends(get_report_service)
 
 
 @router.get("/monthly-summary", status_code=HTTP_200_OK)
-def get_monthly_summary(
+async def get_monthly_summary(
     month: int,
     year: int,
     account_id: Optional[int] = None,
@@ -22,13 +22,13 @@ def get_monthly_summary(
 ) -> dict[str, Decimal]:
 
     try:
-        return service.get_monthly_summary(month, year, account_id)
+        return await service.get_monthly_summary(month, year, account_id)
     except ValueError as error:
         raise HTTPException(status_code=HTTP_400_BAD_REQUEST, detail=str(error))
 
 
 @router.get("/spending-breakdown", status_code=HTTP_200_OK)
-def get_spending_breakdown_by_category(
+async def get_spending_breakdown_by_category(
     month: int,
     year: int,
     account_id: Optional[int] = None,
@@ -36,6 +36,6 @@ def get_spending_breakdown_by_category(
 ) -> dict[str, Decimal]:
 
     try:
-        return service.get_spending_breakdown_by_category(month, year, account_id)
+        return await service.get_spending_breakdown_by_category(month, year, account_id)
     except ValueError as error:
         raise HTTPException(status_code=HTTP_400_BAD_REQUEST, detail=str(error))

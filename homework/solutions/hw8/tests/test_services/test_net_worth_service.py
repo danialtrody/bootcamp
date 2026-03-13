@@ -4,9 +4,11 @@ from solution.models.account import Account
 from solution.models.transaction import Transaction
 import datetime
 from decimal import Decimal
+import pytest
 
 
-def test_calculate_net_worth_empty_data() -> None:
+@pytest.mark.asyncio
+async def test_calculate_net_worth_empty_data() -> None:
     mock_account_repo = MagicMock()
     mock_transaction_repo = MagicMock()
     mock_transfer_repo = MagicMock()
@@ -15,12 +17,13 @@ def test_calculate_net_worth_empty_data() -> None:
     mock_transaction_repo.get_all.return_value = []
 
     service = NetWorth(mock_account_repo, mock_transaction_repo, mock_transfer_repo)
-    result = service.calculate_net_worth()
+    result = await service.calculate_net_worth()
 
     assert result == Decimal("0")
 
 
-def test_calculate_net_worth_single_account_trans() -> None:
+@pytest.mark.asyncio
+async def test_calculate_net_worth_single_account_trans() -> None:
 
     mock_account_repo = MagicMock()
     mock_transaction_repo = MagicMock()
@@ -51,12 +54,13 @@ def test_calculate_net_worth_single_account_trans() -> None:
 
     service = NetWorth(mock_account_repo, mock_transaction_repo, mock_transfer_repo)
 
-    result = service.calculate_net_worth()
+    result = await service.calculate_net_worth()
 
     assert result == Decimal("130")
 
 
-def test_calculate_net_worth_multiple_accounts() -> None:
+@pytest.mark.asyncio
+async def test_calculate_net_worth_multiple_accounts() -> None:
     mock_account_repo = MagicMock()
     mock_transaction_repo = MagicMock()
     mock_transfer_repo = MagicMock()
@@ -94,13 +98,14 @@ def test_calculate_net_worth_multiple_accounts() -> None:
     ]
 
     service = NetWorth(mock_account_repo, mock_transaction_repo, mock_transfer_repo)
-    result = service.calculate_net_worth()
+    result = await service.calculate_net_worth()
     expected = Decimal("230")
 
     assert result == expected
 
 
-def test_calculate_net_worth_negative_balance() -> None:
+@pytest.mark.asyncio
+async def test_calculate_net_worth_negative_balance() -> None:
 
     mock_account_repo = MagicMock()
     mock_transaction_repo = MagicMock()
@@ -123,6 +128,6 @@ def test_calculate_net_worth_negative_balance() -> None:
 
     service = NetWorth(mock_account_repo, mock_transaction_repo, mock_transfer_repo)
 
-    result = service.calculate_net_worth()
+    result = await service.calculate_net_worth()
 
     assert result == Decimal("-100")
