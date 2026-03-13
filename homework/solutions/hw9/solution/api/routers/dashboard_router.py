@@ -12,11 +12,11 @@ dashboard_service_dependency: DashboardService = Depends(get_dashboard_service)
 
 
 @router.get("/", status_code=HTTP_200_OK)
-def get_dashboard_summary(
+async def get_dashboard_summary(
     service: DashboardService = dashboard_service_dependency,
 ) -> Dict[str, Any]:
 
     try:
-        return service.get_dashboard_summary()
+        return await service.get_dashboard_summary()
     except ValueError as error:
         raise HTTPException(status_code=HTTP_400_BAD_REQUEST, detail=str(error))
