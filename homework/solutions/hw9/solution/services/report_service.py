@@ -3,6 +3,8 @@ from solution.repository.base_repository import BaseRepository
 from solution.models.transaction import Transaction
 from solution.models.categories import Category
 from typing import Dict, Optional
+from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
+from solution.database import async_session_maker
 
 
 class ReportService:
@@ -11,68 +13,72 @@ class ReportService:
         self,
         transaction_repository: BaseRepository[Transaction],
         category_repository: BaseRepository[Category],
+        session_maker: Optional[async_sessionmaker[AsyncSession]] = None,
     ) -> None:
 
         self.transaction_repository = transaction_repository
         self.category_repository = category_repository
+        self.session_maker = session_maker or async_session_maker
 
-    def get_monthly_summary(
+    async def get_monthly_summary(
         self,
         month: int,
         year: int,
         account_id: Optional[int] = None,
     ) -> dict[str, Decimal]:
 
-        total_income = Decimal("0")
-        total_expense = Decimal("0")
+        async with self.session_maker() as session:
+            total_income = Decimal("0")
+            total_expense = Decimal("0")
 
-        transactions = self.transaction_repository.get_all()
+            transactions = await self.transaction_repository.get_all(session)
 
-        for transaction in transactions:
+            for transaction in transactions:
 
-            if not self._is_valid_transaction(transaction, month, year, account_id):
-                continue
+                if not self._is_valid_transaction(transaction, month, year, account_id):
+                    continue
 
-            if transaction.type == "income":
-                total_income += transaction.amount
+                if transaction.type == "income":
+                    total_income += transaction.amount
 
-            elif transaction.type == "expense":
-                total_expense += transaction.amount
+                elif transaction.type == "expense":
+                    total_expense += transaction.amount
 
-        return {
-            "total_income": total_income,
-            "total_expense": total_expense,
-            "net_cash_flow": total_income - total_expense,
-        }
+            return {
+                "total_income": total_income,
+                "total_expense": total_expense,
+                "net_cash_flow": total_income - total_expense,
+            }
 
-    def get_spending_breakdown_by_category(
+    async def get_spending_breakdown_by_category(
         self,
         month: int,
         year: int,
         account_id: Optional[int] = None,
     ) -> dict[str, Decimal]:
 
-        result: Dict[str, Decimal] = {}
+        async with self.session_maker() as session:
+            result: Dict[str, Decimal] = {}
 
-        categories = {
-            category.id: category.name
-            for category in self.category_repository.get_all()
-        }
+            categories = {
+                category.id: category.name
+                for category in await self.category_repository.get_all(session)
+            }
 
-        for transaction in self.transaction_repository.get_all():
+            for transaction in await self.transaction_repository.get_all(session):
 
-            if not self._is_valid_transaction(
-                transaction, month, year, account_id, "expense"
-            ):
-                continue
+                if not self._is_valid_transaction(
+                    transaction, month, year, account_id, "expense"
+                ):
+                    continue
 
-            category_name = categories.get(transaction.category_id, "Unknown")
+                category_name = categories.get(transaction.category_id, "Unknown")
 
-            result[category_name] = (
-                result.get(category_name, Decimal("0")) + transaction.amount
-            )
+                result[category_name] = (
+                    result.get(category_name, Decimal("0")) + transaction.amount
+                )
 
-        return result
+            return result
 
     def _is_valid_transaction(
         self,
