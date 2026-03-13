@@ -1,5 +1,3 @@
-# flake8: noqa: WPS201
-
 from solution.services.transaction_service import TransactionService
 from solution.services.account_service import AccountService
 from solution.services.net_worth_service import NetWorth
@@ -74,4 +72,3 @@ def get_report_service() -> ReportService:
 
 def get_dashboard_service() -> DashboardService:
     return dashboard_service
-
