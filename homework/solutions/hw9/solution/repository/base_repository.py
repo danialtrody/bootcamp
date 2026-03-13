@@ -2,6 +2,7 @@ from typing import Generic, TypeVar, Type, List
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 
+
 EntityType = TypeVar("EntityType")
 
 
