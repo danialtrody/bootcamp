@@ -7,7 +7,6 @@ from solution.services.category_service import CategoryService
 from solution.services.transfer_service import TransferService
 from solution.services.report_service import ReportService
 from solution.services.dashboard_service import DashboardService
-from solution.services.data_portability_service import DataPortabilityService
 
 
 from solution.repository.base_repository import BaseRepository
@@ -48,10 +47,6 @@ reports_service = ReportService(transaction_repository, category_repository)
 
 dashboard_service = DashboardService(net_worth_service, reports_service)
 
-portability_service = DataPortabilityService(
-    account_repository, category_repository, transaction_repository, transfer_repository
-)
-
 
 def get_account_service() -> AccountService:
     return account_service
@@ -80,6 +75,3 @@ def get_report_service() -> ReportService:
 def get_dashboard_service() -> DashboardService:
     return dashboard_service
 
-
-def get_portability_service() -> DataPortabilityService:
-    return portability_service
