@@ -5,7 +5,7 @@ from solution.models.transfer import Transfer
 from decimal import Decimal
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 from solution.database import async_session_maker
-from typing import Optional
+from typing import Optional, List
 
 
 class NetWorth:
@@ -35,7 +35,7 @@ class NetWorth:
 
             return net_worth
 
-    def _calculate_account_balance(self, account: Account, transactions: Transaction) -> Decimal:
+    def _calculate_account_balance(self, account: Account, transactions: List[Transaction]) -> Decimal:
         balance = account.opening_balance
         for transaction in transactions:
             if transaction.account_id != account.id:
