@@ -114,7 +114,8 @@ async def test_calculate_net_worth_param(
     expected: Decimal,
 ) -> None:
     service = net_worth_service
-
+    service.account_repository = AsyncMock()
+    service.transaction_repository = AsyncMock()
     service.account_repository.get_all = AsyncMock(return_value=accounts)
     service.transaction_repository.get_all = AsyncMock(return_value=transactions)
 

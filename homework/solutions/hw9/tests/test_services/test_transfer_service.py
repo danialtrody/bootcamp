@@ -95,6 +95,7 @@ async def test_get_all_transfers(
     output: List[Dict[str, Any]],
 ) -> None:
     service = transfer_service
+    service.transfer_repository = AsyncMock()
     service.transfer_repository.get_all = AsyncMock(return_value=transfers_data)
     result = await transfer_service.get_all_transfers()
     assert result == output
@@ -156,8 +157,9 @@ async def test_add_transfer(
         to_account_id=transfer_data.get("to_account_id", 0),
         date="2026-03-10",
     )
-
+    serviec.transfer_repository = AsyncMock()
     serviec.transfer_repository.create = AsyncMock(return_value=mock_transfer)
+    serviec.account_repository = AsyncMock()
     serviec.account_repository.get = AsyncMock(return_value=MagicMock())
 
     result = await serviec.add_transfer(transfer_data)
@@ -168,6 +170,7 @@ async def test_add_transfer(
 @pytest.mark.asyncio
 async def test_delete_transfer(transfer_service: TransferService) -> None:
     serviec = transfer_service
+    serviec.transfer_repository = AsyncMock()
     serviec.transfer_repository.delete = AsyncMock()
     await serviec.delete_transfer(42)
     serviec.transfer_repository.delete.assert_awaited_once()

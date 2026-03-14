@@ -77,6 +77,7 @@ async def test_get_all_categories(
     expected: List[Dict[str, Any]],
 ) -> None:
     service = category_service
+    service.category_repository = AsyncMock()
     service.category_repository.get_all = AsyncMock(return_value=category_data)
 
     result = await service.get_all_categories()
@@ -94,6 +95,7 @@ async def test_add_category_success(category_service: CategoryService) -> None:
     mock_category.name = "TEST"
     mock_category.type = "expense"
 
+    service.category_repository = AsyncMock()
     service.category_repository.get_all = AsyncMock(return_value=[])
     service.category_repository.create = AsyncMock(return_value=mock_category)
 
@@ -112,6 +114,7 @@ async def test_add_category_fail(category_service: CategoryService) -> None:
     mock_category.name = "TEST"
     mock_category.type = "expense"
 
+    service.category_repository = AsyncMock()
     service.category_repository.get_all = AsyncMock(return_value=[mock_category])
     service.category_repository.create = AsyncMock(return_value=mock_category)
 
@@ -122,7 +125,7 @@ async def test_add_category_fail(category_service: CategoryService) -> None:
 @pytest.mark.asyncio
 async def test_delete_category(category_service: CategoryService) -> None:
     service = category_service
-
+    service.category_repository = AsyncMock()
     service.category_repository.delete = AsyncMock()
     await service.delete_category(50)
     service.category_repository.delete.assert_awaited_once()

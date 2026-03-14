@@ -62,10 +62,11 @@ async def test_get_dashboard_summary_param(
     expected: Dict,
 ) -> None:
     service = dashboard_service
-
+    service.net_worth_service = AsyncMock()
     service.net_worth_service.calculate_net_worth = AsyncMock(
         return_value=net_worth_value
     )
+    service.report_service = AsyncMock()
     service.report_service.get_monthly_summary = AsyncMock(return_value=monthly_summary)
 
     result = await service.get_dashboard_summary()

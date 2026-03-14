@@ -76,6 +76,7 @@ async def test_get_account(account_service: AccountService) -> None:
     test_accont.name = "Cash"
     test_accont.opening_balance = 100
 
+    service.account_repository = AsyncMock()
     service.account_repository.get = AsyncMock()
     service.account_repository.get.return_value = test_accont
 
@@ -150,6 +151,7 @@ async def testget_account_balance(
     service = account_service
     service.transaction_repository
 
+    service.account_repository = AsyncMock()
     service.account_repository.get = AsyncMock()
     service.account_repository.get.return_value = test_account
 
@@ -172,6 +174,7 @@ async def test_add_account(account_service: AccountService) -> None:
     mock_account.name = "TEST"
     mock_account.opening_balance = 100
 
+    service.account_repository = AsyncMock()
     service.account_repository.create = AsyncMock()
     service.account_repository.get_all = AsyncMock(return_value=[])
     service.account_repository.create.return_value = mock_account
@@ -189,6 +192,7 @@ async def test_update_account_name(account_service: AccountService) -> None:
     mock_account.name = "TEST"
     mock_account.opening_balance = 0
 
+    service.account_repository = AsyncMock()
     service.account_repository.get = AsyncMock(return_value=mock_account)
     service.account_repository.get_all = AsyncMock(return_value=[mock_account])
     mock_account.name = "updated_name"
@@ -202,6 +206,7 @@ async def test_update_account_name(account_service: AccountService) -> None:
 @pytest.mark.asyncio
 async def test_delete_account(account_service: AccountService) -> None:
     service = account_service
+    service.account_repository = AsyncMock()
     service.account_repository.delete = AsyncMock()
     await service.delete_account(42)
     service.account_repository.delete.assert_awaited_once()

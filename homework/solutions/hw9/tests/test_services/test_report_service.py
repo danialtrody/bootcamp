@@ -137,7 +137,7 @@ async def test_get_monthly_summary(
     expected: Dict[str, Decimal],
 ) -> None:
     service = report_service
-
+    service.transaction_repository = AsyncMock()
     service.transaction_repository.get_all = AsyncMock(return_value=transactions)
 
     result = await service.get_monthly_summary(month, year, account_id)
@@ -213,7 +213,8 @@ async def test_get_spending_breakdown_by_category(
     expected: Dict[str, Decimal],
 ) -> None:
     service = report_service
-
+    service.transaction_repository = AsyncMock()
+    service.category_repository = AsyncMock()
     service.transaction_repository.get_all = AsyncMock(return_value=transactions)
     service.category_repository.get_all = AsyncMock(return_value=categories_data)
 

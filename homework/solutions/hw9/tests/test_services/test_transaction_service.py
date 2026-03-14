@@ -115,7 +115,7 @@ async def test_get_all_transactions(
     expected: List[Dict[str, Any]],
 ) -> None:
     service = transaction_service
-
+    service.transaction_repository = AsyncMock()
     service.transaction_repository.get_all = AsyncMock(return_value=transactions)
 
     result = await transaction_service.get_all_transactions(account_id, month, year)
@@ -140,7 +140,9 @@ async def test_add_income(transaction_service: TransactionService) -> None:
         category_id=1,
         date="2026-03-10",
     )
-
+    service.account_repository = AsyncMock()
+    service.category_repository = AsyncMock()
+    service.transaction_repository = AsyncMock()
     service.account_repository.exists = AsyncMock(return_value=True)
     service.category_repository.exists = AsyncMock(return_value=True)
     service.transaction_repository.create = AsyncMock(return_value=mock_transaction)
@@ -176,6 +178,9 @@ async def test_add_expense(transaction_service: TransactionService) -> None:
         date="2026-03-10",
     )
 
+    service.account_repository = AsyncMock()
+    service.category_repository = AsyncMock()
+    service.transaction_repository = AsyncMock()
     service.account_repository.exists = AsyncMock(return_value=True)
     service.category_repository.exists = AsyncMock(return_value=True)
     service.transaction_repository.create = AsyncMock(return_value=mock_transaction)
@@ -195,7 +200,7 @@ async def test_add_expense(transaction_service: TransactionService) -> None:
 @pytest.mark.asyncio
 async def test_delete_transaction(transaction_service: TransactionService) -> None:
     service = transaction_service
+    service.transaction_repository = AsyncMock()
     service.transaction_repository.delete = AsyncMock()
-
     await service.delete_transaction(50)
     service.transaction_repository.delete.assert_awaited_once()
