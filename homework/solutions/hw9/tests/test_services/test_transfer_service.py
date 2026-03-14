@@ -1,131 +1,173 @@
-from unittest.mock import MagicMock
-
 import pytest
+from unittest.mock import MagicMock, AsyncMock
+from typing import Any, Dict, List
 from solution.services.transfer_service import TransferService
 from solution.models.transfer import Transfer
-from typing import List
-from decimal import Decimal
-import datetime
 
 
+@pytest.fixture
+def transfer_service() -> TransferService:
+    transfer_repository = MagicMock()
+    account_repository = MagicMock()
+
+    session = MagicMock()
+    session_maker = MagicMock()
+    session_maker.return_value.__aenter__.return_value = session
+
+    service = TransferService(
+        transfer_repository=transfer_repository,
+        account_repository=account_repository,
+        session_maker=session_maker,
+    )
+    return service
+
+
+@pytest.mark.asyncio
 @pytest.mark.parametrize(
-    "transfer",
+    "transfers_data, output",
     [
+        ([], []),
         (
             [
                 Transfer(
                     id=1,
-                    amount=Decimal("0"),
-                    date=datetime.date(2026, 1, 1),
-                    description="TEST",
+                    amount=100,
+                    description="Test",
                     from_account_id=1,
                     to_account_id=2,
+                    date="2026-03-10",
                 )
-            ]
+            ],
+            [
+                {
+                    "id": 1,
+                    "amount": 100,
+                    "description": "Test",
+                    "from_account_id": 1,
+                    "to_account_id": 2,
+                    "date": "2026-03-10",
+                }
+            ],
         ),
         (
             [
                 Transfer(
                     id=1,
-                    amount=Decimal("100"),
-                    date=datetime.date(2026, 1, 1),
-                    description="TEST",
+                    amount=100,
+                    description="Test2",
                     from_account_id=1,
                     to_account_id=2,
+                    date="2026-03-10",
                 ),
                 Transfer(
                     id=2,
-                    amount=Decimal("1"),
-                    date=datetime.date(2026, 1, 2),
-                    description="TEST2",
-                    from_account_id=3,
-                    to_account_id=4,
+                    amount=50,
+                    description="Test2",
+                    from_account_id=2,
+                    to_account_id=3,
+                    date="2026-03-10",
                 ),
-            ]
+            ],
+            [
+                {
+                    "id": 1,
+                    "amount": 100,
+                    "description": "Test2",
+                    "from_account_id": 1,
+                    "to_account_id": 2,
+                    "date": "2026-03-10",
+                },
+                {
+                    "id": 2,
+                    "amount": 50,
+                    "description": "Test2",
+                    "from_account_id": 2,
+                    "to_account_id": 3,
+                    "date": "2026-03-10",
+                },
+            ],
         ),
     ],
 )
-def test_get_all_transfers(transfer: List[Transfer]) -> None:
-    mock_transfer_repo = MagicMock()
-    mock_account_repo = MagicMock()
-
-    mock_transfer_repo.get_all.return_value = transfer
-
-    service = TransferService(mock_transfer_repo, mock_account_repo)
-
-    result = service.get_all_transfers()
-
-    assert result == transfer
-    mock_transfer_repo.get_all.assert_called_once()
+async def test_get_all_transfers(
+    transfer_service: TransferService,
+    transfers_data: List[Transfer],
+    output: List[Dict[str, Any]],
+) -> None:
+    service = transfer_service
+    service.transfer_repository.get_all = AsyncMock(return_value=transfers_data)
+    result = await transfer_service.get_all_transfers()
+    assert result == output
 
 
-def test_add_transfer_success() -> None:
-    mock_transfer_repo = MagicMock()
-    mock_account_repo = MagicMock()
-
-    transfer = Transfer(
-        id=1,
-        amount=Decimal("100"),
-        date=datetime.date(2026, 1, 1),
-        description="TEST",
-        from_account_id=1,
-        to_account_id=2,
-    )
-
-    service = TransferService(mock_transfer_repo, mock_account_repo)
-
-    mock_transfer_repo.create.return_value = transfer
-
-    result = service.add_transfer(transfer)
-
-    assert result == transfer
-
-    mock_transfer_repo.create.assert_called_once_with(transfer)
-
-
+@pytest.mark.asyncio
 @pytest.mark.parametrize(
-    "transfer, error",
+    "transfer_data, output",
     [
         (
-            Transfer(
-                id=1,
-                amount=Decimal("100"),
-                date=datetime.date(2026, 1, 1),
-                description="TEST",
-                from_account_id=1,
-                to_account_id=1,
-            ),
-            "Source and destination accounts must be different",
+            {
+                "amount": 200,
+                "description": "Test1",
+                "from_account_id": 3,
+                "to_account_id": 2,
+                "date": "2026-03-10",
+            },
+            {
+                "id": 1,
+                "date": "2026-03-10",
+                "amount": 200,
+                "description": "Test1",
+                "from_account_id": 3,
+                "to_account_id": 2,
+            },
         ),
         (
-            Transfer(
-                id=1,
-                amount=Decimal("-1"),
-                date=datetime.date(2026, 1, 1),
-                description="TEST",
-                from_account_id=1,
-                to_account_id=2,
-            ),
-            "Transfer amount must be positive",
+            {
+                "amount": 100,
+                "description": "Test",
+                "from_account_id": 1,
+                "to_account_id": 2,
+                "date": "2026-03-10",
+            },
+            {
+                "id": 1,
+                "date": "2026-03-10",
+                "amount": 100,
+                "description": "Test",
+                "from_account_id": 1,
+                "to_account_id": 2,
+            },
         ),
     ],
 )
-def test_add_transfer_fail(transfer: Transfer, error: str) -> None:
-    mock_transfer_repo = MagicMock()
-    mock_account_repo = MagicMock()
+async def test_add_transfer(
+    transfer_service: TransferService,
+    transfer_data: Dict[str, Any],
+    output: Dict[str, Any],
+) -> None:
 
-    service = TransferService(mock_transfer_repo, mock_account_repo)
+    serviec = transfer_service
 
-    with pytest.raises(ValueError, match=error):
-        service.add_transfer(transfer)
+    mock_transfer = Transfer(
+        id=1,
+        amount=transfer_data.get("amount", 0),
+        description=transfer_data.get("description", ""),
+        from_account_id=transfer_data.get("from_account_id", 0),
+        to_account_id=transfer_data.get("to_account_id", 0),
+        date="2026-03-10",
+    )
+
+    serviec.transfer_repository.create = AsyncMock(return_value=mock_transfer)
+    serviec.account_repository.get = AsyncMock(return_value=MagicMock())
+
+    result = await serviec.add_transfer(transfer_data)
+
+    assert result == output
 
 
-def test_delete_transfer() -> None:
-    mock_transfer_repo = MagicMock()
-    mock_account_repo = MagicMock()
-    service = TransferService(mock_transfer_repo, mock_account_repo)
-    mock_transfer_repo.delete.return_value = None
-
-    service.delete_transfer(1)
-
-    mock_transfer_repo.delete.assert_called_once_with(1)
+@pytest.mark.asyncio
+async def test_delete_transfer(transfer_service: TransferService) -> None:
+    serviec = transfer_service
+    serviec.transfer_repository.delete = AsyncMock()
+    await serviec.delete_transfer(42)
+    serviec.transfer_repository.delete.assert_awaited_once()

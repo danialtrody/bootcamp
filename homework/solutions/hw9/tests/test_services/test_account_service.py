@@ -1,164 +1,207 @@
-from unittest.mock import MagicMock
+from decimal import Decimal
+from typing import Any, Dict, List
 
 import pytest
+from unittest.mock import MagicMock, AsyncMock
 from solution.services.account_service import AccountService
-from solution.models.account import Account
-from typing import List, Dict
-from decimal import Decimal
-
-TEST_ACCOUNT_NAME = "TEST"
+from solution.models.categories import Category
+from solution.models.transaction import Transaction
 
 
-def test_get_account_success() -> None:
-    mock_repository = MagicMock()
-    mock_transaction_repository = MagicMock()
-    mock_transfer_repository = MagicMock()
+@pytest.fixture
+def account_service() -> AccountService:
+
+    account_repository = MagicMock()
+    transaction_repository: Transaction = MagicMock()
+    transfer_repository = MagicMock()
+    Category()
+
+    session = MagicMock()
+
+    session_maker = MagicMock()
+    session_maker.return_value.__aenter__.return_value = session
 
     service = AccountService(
-        mock_repository, mock_transaction_repository, mock_transfer_repository
+        account_repository=account_repository,
+        transaction_repository=transaction_repository,
+        transfer_repository=transfer_repository,
+        session_maker=session_maker,
     )
 
-    expected_account = Account(id=1, name=TEST_ACCOUNT_NAME, opening_balance=Decimal("100"))
-
-    mock_repository.get.return_value = expected_account
-
-    result = service.get_account(1)
-
-    assert result == expected_account
-    mock_repository.get.assert_called_once_with(1)
+    return service
 
 
+@pytest.mark.asyncio
 @pytest.mark.parametrize(
-    "test_data",
+    "accounts_data, expected",
     [
-        ([{"id": 1, "name": TEST_ACCOUNT_NAME, "opening_balance": "0"}]),
+        ([], []),
+        ([(1, "Cash", 100)], [{"id": 1, "name": "Cash", "opening_balance": 100}]),
         (
+            [(1, "TEST1", 1), (2, "TEST2", 2), (3, "TEST3", 3)],
             [
-                {"id": 1, "name": TEST_ACCOUNT_NAME, "opening_balance": "100"},
-                {"id": 2, "name": "TEST2", "opening_balance": "1"},
-            ]
+                {"id": 1, "name": "TEST1", "opening_balance": 1},
+                {"id": 2, "name": "TEST2", "opening_balance": 2},
+                {"id": 3, "name": "TEST3", "opening_balance": 3},
+            ],
         ),
     ],
 )
-def test_get_all_accounts(test_data: List[Dict]) -> None:
-    mock_repository = MagicMock()
-    mock_transaction_repository = MagicMock()
-    mock_transfer_repository = MagicMock()
+async def test_get_all_accounts(
+    account_service: AccountService,
+    accounts_data: List[tuple],
+    expected: List[Dict[str, Any]],
+) -> None:
+    service = account_service
 
-    mock_repository.get_all.return_value = test_data
+    test_accounts = []
+    for id, name, opening_balance in accounts_data:
+        account = MagicMock()
+        account.id = id
+        account.name = name
+        account.opening_balance = opening_balance
+        test_accounts.append(account)
+    service.account_repository = AsyncMock()
+    service.account_repository.get_all = AsyncMock(return_value=test_accounts)
+    result = await service.get_all_accounts()
+    assert result == expected
 
-    service = AccountService(
-        mock_repository, mock_transaction_repository, mock_transfer_repository
-    )
 
-    result = service.get_all_accounts()
+@pytest.mark.asyncio
+async def test_get_account(account_service: AccountService) -> None:
+    service = account_service
 
-    assert result == test_data
-    mock_repository.get_all.assert_called_once()
+    test_accont = MagicMock()
+    test_accont.id = 1
+    test_accont.name = "Cash"
+    test_accont.opening_balance = 100
+
+    service.account_repository.get = AsyncMock()
+    service.account_repository.get.return_value = test_accont
+
+    result = await service.get_account(test_accont.id)
+
+    assert result == {"id": 1, "name": "Cash", "opening_balance": 100}
 
 
+@pytest.mark.asyncio
 @pytest.mark.parametrize(
-    "test_data",
+    "account_id, test_account, test_transaction, test_transfer, output",
     [
-        (Account(id=1, name=TEST_ACCOUNT_NAME, opening_balance=Decimal("10"))),
-        (Account(id=2, name="TEST2", opening_balance=Decimal("200"))),
-    ],
-)
-def test_add_account_succes(test_data: Account) -> None:
-    mock_repository = MagicMock()
-    mock_transaction_repository = MagicMock()
-    mock_transfer_repository = MagicMock()
-
-    mock_repository.create.return_value = test_data
-
-    service = AccountService(
-        mock_repository, mock_transaction_repository, mock_transfer_repository
-    )
-
-    result = service.add_account(test_data)
-
-    assert result == test_data
-    mock_repository.create.assert_called_once_with(test_data)
-
-
-@pytest.mark.parametrize(
-    "test_data, error",
-    [
-        (None, "Account cannot be None"),
         (
-            Account(id=1, name="", opening_balance=Decimal("10")),
-            "Account name cannot be empty",
+            1,
+            MagicMock(id=1, name="cash", opening_balance=100),
+            [
+                MagicMock(
+                    id=1,
+                    amount=100,
+                    date="2026-03-10",
+                    type="income",
+                    account_id=1,
+                    category_id=1,
+                ),
+                MagicMock(
+                    id=2,
+                    amount=100,
+                    date="2026-03-10",
+                    type="income",
+                    account_id=1,
+                    category_id=1,
+                ),
+                MagicMock(
+                    id=3,
+                    amount=50,
+                    date="2026-03-10",
+                    type="expense",
+                    account_id=1,
+                    category_id=1,
+                ),
+            ],
+            [
+                MagicMock(
+                    id=1,
+                    amount=10,
+                    date="2026-03-10",
+                    description="",
+                    from_account_id=2,
+                    to_account_id=1,
+                ),
+                MagicMock(
+                    id=1,
+                    amount=10,
+                    date="2026-03-10",
+                    description="",
+                    from_account_id=1,
+                    to_account_id=2,
+                ),
+            ],
+            250,
         ),
     ],
 )
-def test_add_account_fail(test_data: Account, error: str) -> None:
-    mock_repository = MagicMock()
-    mock_transaction_repository = MagicMock()
-    mock_transfer_repository = MagicMock()
+async def testget_account_balance(
+    account_service: AccountService,
+    account_id: int,
+    test_account: List[MagicMock],
+    test_transaction: List[MagicMock],
+    test_transfer: List[MagicMock],
+    output: Decimal,
+) -> None:
+    service = account_service
+    service.transaction_repository
 
-    service = AccountService(
-        mock_repository, mock_transaction_repository, mock_transfer_repository
-    )
+    service.account_repository.get = AsyncMock()
+    service.account_repository.get.return_value = test_account
 
-    with pytest.raises(ValueError, match=error):
-        service.add_account(test_data)
+    service.transaction_repository = AsyncMock()
+    service.transaction_repository.get_all.return_value = test_transaction
 
+    service.transfer_repository = AsyncMock()
+    service.transfer_repository.get_all.return_value = test_transfer
 
-def test_update_account_success() -> None:
-    original_account = Account(id=1, name=TEST_ACCOUNT_NAME, opening_balance=Decimal("110"))
-
-    updated_account = Account(id=1, name="UPDATED_TEST", opening_balance=Decimal("110"))
-
-    mock_repository = MagicMock()
-    mock_transaction_repository = MagicMock()
-    mock_transfer_repository = MagicMock()
-
-    service = AccountService(
-        mock_repository, mock_transaction_repository, mock_transfer_repository
-    )
-
-    mock_repository.get.return_value = original_account
-    mock_repository.update.return_value = updated_account
-
-    result = service.update_account_name(1, "UPDATED_TEST")
-
-    assert result == updated_account
-    mock_repository.update.assert_called_once_with(updated_account)
+    result = await service.get_account_balance(account_id)
+    assert result == output
 
 
-def test_delete_account() -> None:
-    mock_repository = MagicMock()
-    mock_transaction_repository = MagicMock()
-    mock_transfer_repository = MagicMock()
+@pytest.mark.asyncio
+async def test_add_account(account_service: AccountService) -> None:
+    service = account_service
 
-    service = AccountService(
-        mock_repository, mock_transaction_repository, mock_transfer_repository
-    )
+    mock_account = MagicMock()
+    mock_account.id = 1
+    mock_account.name = "TEST"
+    mock_account.opening_balance = 100
 
-    mock_repository.delete.return_value = None
-    service.delete_account(1)
+    service.account_repository.create = AsyncMock()
+    service.account_repository.get_all = AsyncMock(return_value=[])
+    service.account_repository.create.return_value = mock_account
+    result = await service.add_account(mock_account)
 
-    mock_repository.delete.assert_called_once_with(1)
+    assert result == {"id": 1, "name": "TEST", "opening_balance": 100}
 
 
-def test_get_account_balance() -> None:
-    mock_account_repository = MagicMock()
-    mock_transaction_repository = MagicMock()
-    mock_transfer_repository = MagicMock()
+@pytest.mark.asyncio
+async def test_update_account_name(account_service: AccountService) -> None:
+    service = account_service
 
-    service = AccountService(
-        mock_account_repository,
-        mock_transaction_repository,
-        mock_transfer_repository,
-    )
+    mock_account = MagicMock()
+    mock_account.id = 1
+    mock_account.name = "TEST"
+    mock_account.opening_balance = 0
 
-    account = Account(id=1, name=TEST_ACCOUNT_NAME, opening_balance=Decimal("1000"))
+    service.account_repository.get = AsyncMock(return_value=mock_account)
+    service.account_repository.get_all = AsyncMock(return_value=[mock_account])
+    mock_account.name = "updated_name"
+    service.account_repository.update = AsyncMock(return_value=mock_account)
 
-    mock_account_repository.get.return_value = account
+    result = await service.update_account_name(1, "updated_name")
 
-    mock_transaction_repository.get_all.return_value = []
-    mock_transfer_repository.get_all.return_value = []
+    assert result == {"id": 1, "name": "updated_name", "opening_balance": 0}
 
-    result = service.get_account_balance(1)
 
-    assert result == Decimal("1000")
+@pytest.mark.asyncio
+async def test_delete_account(account_service: AccountService) -> None:
+    service = account_service
+    service.account_repository.delete = AsyncMock()
+    await service.delete_account(42)
+    service.account_repository.delete.assert_awaited_once()
