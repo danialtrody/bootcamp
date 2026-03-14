@@ -18,5 +18,5 @@ class Category(HasId):
         return {
             "id": self.id,
             "name": self.name,
-            "type": self.type.value
+            "type": self.type
         }

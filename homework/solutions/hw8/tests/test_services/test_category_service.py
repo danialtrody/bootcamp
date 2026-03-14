@@ -16,7 +16,7 @@ NAME = "TEST"
         ([], []),
         (
             [Category(id=1, name=NAME, type=CategoryType.INCOME)],
-            [{"id": 1, "name": NAME, "type": "income"}],
+            [{"id": 1, "name": NAME, "type": CategoryType.INCOME}],
         ),
         (
             [
@@ -24,8 +24,8 @@ NAME = "TEST"
                 Category(id=2, name="TEST2", type=CategoryType.INCOME),
             ],
             [
-                {"id": 1, "name": "TEST", "type": "income"},
-                {"id": 2, "name": "TEST2", "type": "income"},
+                {"id": 1, "name": "TEST", "type": CategoryType.INCOME},
+                {"id": 2, "name": "TEST2", "type": CategoryType.INCOME},
             ],
         ),
     ],
