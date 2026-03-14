@@ -1,6 +1,18 @@
 from solution.repository.base_repository import BaseRepository
-from solution.models.categories import Category
+from solution.models.categories import Category, CategoryType
 from typing import List, Any, Dict
+
+
+NAME = "name"
+TYPE = "type"
+
+DEFAULT_CATEGORIES = (
+    {NAME: "Salary", TYPE: "income"},
+    {NAME: "Freelance", TYPE: "income"},
+    {NAME: "Rent", TYPE: "expense"},
+    {NAME: "Groceries", TYPE: "expense"},
+    {NAME: "Utilities", TYPE: "expense"},
+)
 
 
 class CategoryService:
@@ -14,10 +26,7 @@ class CategoryService:
 
     async def add_category(self, category_data: Dict[str, Any]) -> Dict[str, Any]:
 
-        category = Category(
-            name=category_data["name"],
-            type=category_data["type"]
-        )
+        category = Category(name=category_data["name"], type=category_data["type"])
 
         if category is None:
             raise ValueError("Category cannot be None")
@@ -31,6 +40,17 @@ class CategoryService:
 
     async def delete_category(self, category_id: int) -> None:
         self.category_repository.delete(category_id)
+
+    async def seed_default_categories(self) -> None:
+        categories = self.category_repository.get_all()
+
+        if not categories:
+            for category_data in DEFAULT_CATEGORIES:
+                category = Category(
+                    name=category_data["name"],
+                    type=CategoryType(category_data["type"]),
+                )
+                self.category_repository.create(category)
 
     def _check_if_exists(self, category: Category) -> None:
         existing_categories = self.category_repository.get_all()

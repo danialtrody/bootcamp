@@ -15,10 +15,14 @@ class Transaction(HasId):
     id: int = 0
 
     def to_dict(self) -> dict[str, Any]:
+        if isinstance(self.date, str):
+            date_str = self.date
+        else:
+            date_str = self.date.isoformat()
         return {
             "id": self.id,
             "amount": float(self.amount),
-            "date": self.date.isoformat(),
+            "date": date_str,
             "type": self.type,
             "account_id": self.account_id,
             "category_id": self.category_id,
