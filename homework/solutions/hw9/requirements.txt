@@ -76,3 +76,4 @@ watchfiles==1.1.1
 websockets==16.0
 wemake-python-styleguide==1.5.0
 yarl==1.23.0
+
