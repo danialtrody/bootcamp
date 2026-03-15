@@ -1,0 +1,18 @@
+[
+    {
+        "email": "admin@school.test",
+        "first_name": "Admin",
+        "last_name": "User",
+        "password": "TestPassword123!",
+        "role": "admin",
+        "disabled": false
+    },
+    {
+        "email": "student@school.test",
+        "first_name": "Student",
+        "last_name": "User",
+        "password": "TestPassword123!",
+        "role": "student",
+        "disabled": false
+    }
+]

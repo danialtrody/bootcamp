@@ -1,0 +1,3 @@
+from src.repositories.auth_session_repository import AuthSessionRepository
+from src.repositories.student_repository import StudentRepository
+from src.repositories.user_repository import UserRepository
